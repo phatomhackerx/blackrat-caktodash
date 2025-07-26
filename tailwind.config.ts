@@ -61,7 +61,28 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				/* BlackRat OS Custom Colors */
+				glass: 'var(--glass)',
+				'glass-border': 'var(--glass-border)',
+				'terminal-bg': 'var(--terminal-bg)'
+			},
+			fontFamily: {
+				'sans': ['Inter', 'system-ui', 'sans-serif'],
+				'mono': ['JetBrains Mono', 'Consolas', 'monospace']
+			},
+			backgroundImage: {
+				'glass-gradient': 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
+				'terminal-gradient': 'linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 100%)'
+			},
+			backdropBlur: {
+				'glass': '20px'
+			},
+			animation: {
+				'slide-in': 'slideIn 0.3s ease-out',
+				'fade-in': 'fadeIn 0.3s ease-out',
+				'pulse-subtle': 'pulseSubtle 2s infinite',
+				'glow': 'glow 2s ease-in-out infinite alternate'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +105,23 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				slideIn: {
+					'0%': { transform: 'translateX(-100%)', opacity: '0' },
+					'100%': { transform: 'translateX(0)', opacity: '1' }
+				},
+				fadeIn: {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				pulseSubtle: {
+					'0%, 100%': { opacity: '0.7' },
+					'50%': { opacity: '1' }
+				},
+				glow: {
+					'0%': { boxShadow: '0 0 5px rgba(255,255,255,0.1)' },
+					'100%': { boxShadow: '0 0 20px rgba(255,255,255,0.2)' }
 				}
-			},
-			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
 			}
 		}
 	},
