@@ -12,6 +12,8 @@ import TerminalPage from "./pages/TerminalPage";
 import Monitoring from "./pages/Monitoring";
 import Watchlist from "./pages/Watchlist";
 import Network from "./pages/Network";
+import Logs from "./pages/Logs";
+import OSINT from "./pages/OSINT";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +35,8 @@ const App = () => (
           <Route path="/monitoring" element={<Monitoring />} />
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/network" element={<Network />} />
+          <Route path="/logs" element={<Logs />} />
+          <Route path="/osint" element={<OSINT />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
