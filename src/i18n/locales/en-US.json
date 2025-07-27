@@ -1,0 +1,136 @@
+{
+  "common": {
+    "language": "Language",
+    "settings": "Settings",
+    "reset": "Reset",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "connected": "Connected",
+    "disconnected": "Disconnected"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "scanners": "Scanners",
+    "exploits": "Exploits",
+    "phishing": "Phishing",
+    "payloads": "Payloads",
+    "terminal": "Terminal",
+    "monitoring": "Monitoring",
+    "watchlist": "Watchlist",
+    "network": "Network",
+    "logs": "Logs",
+    "osint": "OSINT",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Command Center",
+    "welcome": "Welcome to BlackRat OS",
+    "subtitle": "Advanced penetration testing platform",
+    "systemStatus": "System Status",
+    "quickAccess": "Quick Access",
+    "terminal": "Terminal",
+    "recentCves": "Recent CVEs",
+    "watchlist": "Watchlist"
+  },
+  "systemStatus": {
+    "title": "System Status",
+    "cpuUsage": "CPU Usage",
+    "ramUsage": "RAM Usage",
+    "vpnStatus": "VPN Status",
+    "networkInterface": "Network Interface",
+    "activeShells": "Active Shells",
+    "openPorts": "Open Ports"
+  },
+  "quickAccess": {
+    "title": "Quick Access",
+    "nmap": "Nmap Scanner",
+    "metasploit": "Metasploit",
+    "wireshark": "Wireshark",
+    "burpsuite": "Burp Suite",
+    "sqlmap": "SQLMap",
+    "johnripper": "John the Ripper"
+  },
+  "terminal": {
+    "title": "Advanced Terminal",
+    "newTab": "New Tab",
+    "scripts": "Scripts",
+    "command": "Enter command...",
+    "send": "Send"
+  },
+  "scanners": {
+    "title": "Network Scanners",
+    "networkScan": "Network Scan",
+    "portScan": "Port Scan",
+    "vulnScan": "Vulnerability Scan",
+    "target": "Target",
+    "startScan": "Start Scan",
+    "results": "Results"
+  },
+  "exploits": {
+    "title": "Exploit Database",
+    "search": "Search exploits...",
+    "category": "Category",
+    "severity": "Severity",
+    "execute": "Execute",
+    "download": "Download"
+  },
+  "payloads": {
+    "title": "Payload Generator",
+    "type": "Payload Type",
+    "platform": "Platform",
+    "encoder": "Encoder",
+    "format": "Format",
+    "generate": "Generate Payload",
+    "copy": "Copy",
+    "download": "Download"
+  },
+  "monitoring": {
+    "title": "System Monitoring",
+    "networkTraffic": "Network Traffic",
+    "activeConnections": "Active Connections",
+    "systemMetrics": "System Metrics",
+    "alerts": "Alerts"
+  },
+  "watchlist": {
+    "title": "Target Watchlist",
+    "addTarget": "Add Target",
+    "targetName": "Target Name",
+    "ipAddress": "IP Address",
+    "description": "Description",
+    "tags": "Tags",
+    "priority": "Priority",
+    "lastScan": "Last Scan"
+  },
+  "logs": {
+    "title": "Log Center",
+    "filter": "Filter logs...",
+    "level": "Level",
+    "timestamp": "Timestamp",
+    "message": "Message",
+    "clear": "Clear Logs",
+    "export": "Export"
+  },
+  "osint": {
+    "title": "OSINT Intelligence",
+    "domainAnalysis": "Domain Analysis",
+    "emailHarvesting": "Email Harvesting",
+    "socialMedia": "Social Media",
+    "search": "Search information..."
+  },
+  "settings": {
+    "title": "Settings",
+    "userProfile": "User Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "tools": "Tools",
+    "proxy": "Proxy/VPN",
+    "demoMode": "Demo Mode",
+    "stealthMode": "Stealth Mode",
+    "resetSession": "Reset Session"
+  }
+}

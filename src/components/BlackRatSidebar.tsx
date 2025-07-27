@@ -13,6 +13,8 @@ import {
   Wifi,
   Eye
 } from "lucide-react"
+import { useTranslation } from "react-i18next"
+import { useBlackRatStore } from "@/store/blackrat-store"
 import blackratLogo from "@/assets/blackrat-logo.png"
 import { NavLink, useLocation } from "react-router-dom"
 
@@ -29,32 +31,40 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-const menuItems = [
-  { title: "Dashboard", url: "/", icon: Shield },
-  { title: "Scanners", url: "/scanners", icon: Search },
-  { title: "Exploits", url: "/exploits", icon: Zap },
-  { title: "Phishing", url: "/phishing", icon: Mail },
-  { title: "Payloads", url: "/payloads", icon: Package },
-  { title: "Terminal", url: "/terminal", icon: Terminal },
-  { title: "Monitoring", url: "/monitoring", icon: Activity },
-  { title: "Watchlist", url: "/watchlist", icon: Target },
-  { title: "Network", url: "/network", icon: Wifi },
-  { title: "Logs", url: "/logs", icon: FileText },
-  { title: "OSINT", url: "/osint", icon: Eye },
-  { title: "Settings", url: "/settings", icon: Settings }
-]
-
 export function BlackRatSidebar() {
+  const { t } = useTranslation()
+  const { systemMetrics } = useBlackRatStore()
   const { state } = useSidebar()
   const location = useLocation()
   const currentPath = location.pathname
   const collapsed = state === "collapsed"
+
+  const menuItems = [
+    { title: t("sidebar.dashboard"), url: "/", icon: Shield },
+    { title: t("sidebar.scanners"), url: "/scanners", icon: Search },
+    { title: t("sidebar.exploits"), url: "/exploits", icon: Zap },
+    { title: t("sidebar.phishing"), url: "/phishing", icon: Mail },
+    { title: t("sidebar.payloads"), url: "/payloads", icon: Package },
+    { title: t("sidebar.terminal"), url: "/terminal", icon: Terminal },
+    { title: t("sidebar.monitoring"), url: "/monitoring", icon: Activity },
+    { title: t("sidebar.watchlist"), url: "/watchlist", icon: Target },
+    { title: t("sidebar.network"), url: "/network", icon: Wifi },
+    { title: t("sidebar.logs"), url: "/logs", icon: FileText },
+    { title: t("sidebar.osint"), url: "/osint", icon: Eye },
+    { title: t("sidebar.settings"), url: "/settings", icon: Settings }
+  ]
 
   const isActive = (path: string) => currentPath === path
   const getNavClass = (active: boolean) => 
     active 
       ? "bg-glass-gradient border border-glass-border text-primary font-semibold animate-glow" 
       : "hover:bg-glass-gradient hover:border hover:border-glass-border transition-all duration-300"
+
+  const getStatusColor = () => {
+    if (systemMetrics.vpnStatus && systemMetrics.cpu < 80) return "bg-emerald-500"
+    if (systemMetrics.cpu > 90) return "bg-red-500"
+    return "bg-yellow-500"
+  }
 
   return (
     <Sidebar
@@ -87,7 +97,7 @@ export function BlackRatSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className={`${collapsed ? 'hidden' : 'block'} text-muted-foreground font-semibold text-xs tracking-wider uppercase mb-4`}>
-            Red Team Tools
+            {t("sidebar.title", "Red Team Tools")}
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
@@ -95,16 +105,21 @@ export function BlackRatSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end 
-                      className={`${getNavClass(isActive(item.url))} p-3 rounded-lg flex items-center space-x-3 group`}
-                    >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
-                      {!collapsed && (
-                        <span className="font-medium text-sm">{item.title}</span>
-                      )}
-                    </NavLink>
+                     <NavLink 
+                       to={item.url} 
+                       end 
+                       className={`${getNavClass(isActive(item.url))} p-3 rounded-lg flex items-center space-x-3 group relative`}
+                     >
+                       <div className="relative">
+                         <item.icon className="h-5 w-5 flex-shrink-0" />
+                         {item.url === "/monitoring" && (
+                           <div className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ${getStatusColor()}`} />
+                         )}
+                       </div>
+                       {!collapsed && (
+                         <span className="font-medium text-sm">{item.title}</span>
+                       )}
+                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -117,10 +132,14 @@ export function BlackRatSidebar() {
           <div className="mt-auto pt-6">
             <div className="bg-glass-gradient border border-glass-border rounded-lg p-3">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-primary rounded-full animate-pulse-subtle"></div>
-                <span className="text-xs text-muted-foreground font-mono">ONLINE</span>
+                <div className={`w-2 h-2 rounded-full animate-pulse-subtle ${getStatusColor()}`}></div>
+                <span className="text-xs text-muted-foreground font-mono">
+                  {systemMetrics.vpnStatus ? t("common.connected") : t("common.disconnected")}
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">All systems operational</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                CPU: {systemMetrics.cpu}% | VPN: {systemMetrics.vpnStatus ? "ON" : "OFF"}
+              </p>
             </div>
           </div>
         )}
