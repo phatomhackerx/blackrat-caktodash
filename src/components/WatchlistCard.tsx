@@ -1,140 +1,197 @@
-import { useState } from "react"
-import { Target, ChevronDown, ChevronUp, Plus, Activity } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Target, Plus, MoreVertical, Clock, Shield } from 'lucide-react'
+import { useBlackRatStore } from '@/store/blackrat-store'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 export function WatchlistCard() {
-  const [isExpanded, setIsExpanded] = useState(true)
-
-  const targets = [
-    {
-      name: "corp-web-01",
-      ip: "192.168.1.50",
-      status: "online",
-      ports: [80, 443, 22],
-      lastSeen: "2min ago"
-    },
-    {
-      name: "mail-server",
-      ip: "192.168.1.25",
-      status: "online", 
-      ports: [25, 110, 993],
-      lastSeen: "5min ago"
-    },
-    {
-      name: "database-srv",
-      ip: "192.168.1.100",
-      status: "offline",
-      ports: [3306, 5432],
-      lastSeen: "1h ago"
-    }
-  ]
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { targets, setCurrentTarget, removeTarget, addLog } = useBlackRatStore()
 
   const getStatusColor = (status: string) => {
-    return status === 'online' ? 'text-green-400' : 'text-red-400'
+    const colors = {
+      scanning: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      vulnerable: 'bg-red-500/20 text-red-400 border-red-500/30',
+      secure: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+      unknown: 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+    }
+    return colors[status as keyof typeof colors] || colors.unknown
   }
 
-  const getStatusDot = (status: string) => {
-    return status === 'online' ? 'bg-green-400' : 'bg-red-400'
+  const getPriorityColor = (priority: string) => {
+    const colors = {
+      critical: 'bg-red-500/20 text-red-400 border-red-500/30',
+      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      low: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+    }
+    return colors[priority as keyof typeof colors] || colors.low
   }
+
+  const formatLastScan = (date?: Date) => {
+    if (!date) return t('watchlist.neverScanned', 'Nunca escaneado')
+    
+    const now = new Date()
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+    
+    if (diffInHours < 1) return t('watchlist.justNow', 'Agora mesmo')
+    if (diffInHours < 24) return t('watchlist.hoursAgo', '{hours}h atrás', { hours: diffInHours })
+    return t('watchlist.daysAgo', '{days}d atrás', { days: Math.floor(diffInHours / 24) })
+  }
+
+  const handleSelectTarget = (target: typeof targets[0]) => {
+    setCurrentTarget(target)
+    addLog({
+      level: 'info',
+      source: 'Watchlist',
+      message: `Alvo selecionado: ${target.name} (${target.ip})`
+    })
+  }
+
+  const handleRemoveTarget = (id: string, name: string) => {
+    removeTarget(id)
+    addLog({
+      level: 'warning',
+      source: 'Watchlist',
+      message: `Alvo removido: ${name}`
+    })
+  }
+
+  const recentTargets = targets.slice(0, 3)
 
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border border-glass-border hover:border-primary/20 transition-all duration-300">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-primary flex items-center space-x-2">
-            <Target className="h-5 w-5" />
-            <span>Watchlist</span>
-          </CardTitle>
-          <div className="flex items-center space-x-2">
+    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium flex items-center gap-2">
+          <Target className="h-4 w-4" />
+          {t('dashboard.watchlist', 'Lista de Alvos')}
+        </CardTitle>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/watchlist')}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {recentTargets.length === 0 ? (
+          <div className="text-center py-4">
+            <Target className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">
+              {t('watchlist.empty', 'Nenhum alvo adicionado')}
+            </p>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="h-8 w-8 p-0 hover:bg-glass"
+              className="mt-2"
+              onClick={() => navigate('/watchlist')}
             >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="h-8 w-8 p-0 hover:bg-glass"
-            >
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
+              {t('watchlist.addFirst', 'Adicionar primeiro alvo')}
             </Button>
           </div>
-        </div>
-      </CardHeader>
-      
-      {isExpanded && (
-        <CardContent className="pt-0 animate-fade-in">
-          <div className="space-y-3">
-            {targets.map((target, index) => (
-              <div 
-                key={index}
-                className="p-3 bg-glass-gradient border border-glass-border rounded-lg hover:border-primary/30 transition-all duration-300"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <div className={`w-2 h-2 rounded-full ${getStatusDot(target.status)} animate-pulse-subtle`}></div>
-                    <span className="text-sm font-semibold text-foreground">
+        ) : (
+          recentTargets.map((target) => (
+            <div 
+              key={target.id}
+              className="p-3 rounded-lg bg-black/20 border border-white/10 hover:bg-black/30 transition-colors group cursor-pointer"
+              onClick={() => handleSelectTarget(target)}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-medium text-sm text-white truncate">
                       {target.name}
-                    </span>
+                    </h3>
+                    <Badge className={`text-xs ${getPriorityColor(target.priority)}`}>
+                      {t(`priority.${target.priority}`, target.priority)}
+                    </Badge>
                   </div>
-                  <span className={`text-xs font-semibold ${getStatusColor(target.status)}`}>
-                    {target.status.toUpperCase()}
-                  </span>
-                </div>
-                
-                <div className="space-y-1">
-                  <p className="text-sm font-mono text-muted-foreground">
+                  <p className="text-xs text-muted-foreground font-mono">
                     {target.ip}
                   </p>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-wrap gap-1">
-                      {target.ports.map((port) => (
-                        <span 
-                          key={port}
-                          className="px-1.5 py-0.5 bg-secondary text-secondary-foreground text-xs font-mono rounded border border-glass-border"
-                        >
-                          :{port}
-                        </span>
-                      ))}
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {target.lastSeen}
-                    </span>
-                  </div>
+                </div>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <MoreVertical className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => navigate('/scanners')}>
+                      <Shield className="h-4 w-4 mr-2" />
+                      {t('watchlist.scan', 'Escanear')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => handleRemoveTarget(target.id, target.name)}
+                      className="text-red-400"
+                    >
+                      <Target className="h-4 w-4 mr-2" />
+                      {t('watchlist.remove', 'Remover')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <Badge className={`text-xs ${getStatusColor(target.status)}`}>
+                  {t(`status.${target.status}`, target.status)}
+                </Badge>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>{formatLastScan(target.lastScan)}</span>
                 </div>
               </div>
-            ))}
-          </div>
-          
-          <div className="flex space-x-2 mt-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex-1 border-glass-border hover:border-primary/30 hover:bg-primary/5"
-            >
-              <Activity className="h-3 w-3 mr-1" />
-              Scan All
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex-1 border-glass-border hover:border-primary/30 hover:bg-primary/5"
-            >
-              <Plus className="h-3 w-3 mr-1" />
-              Add Target
-            </Button>
-          </div>
-        </CardContent>
-      )}
+              
+              {target.ports && target.ports.length > 0 && (
+                <div className="mt-2 pt-2 border-t border-white/10">
+                  <div className="flex flex-wrap gap-1">
+                    {target.ports.slice(0, 4).map((port) => (
+                      <Badge 
+                        key={port} 
+                        variant="outline" 
+                        className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30"
+                      >
+                        {port}
+                      </Badge>
+                    ))}
+                    {target.ports.length > 4 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{target.ports.length - 4}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        )}
+        
+        {targets.length > 3 && (
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => navigate('/watchlist')}
+          >
+            {t('watchlist.viewAll', 'Ver todos os alvos')} ({targets.length})
+          </Button>
+        )}
+      </CardContent>
     </Card>
   )
 }

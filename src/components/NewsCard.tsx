@@ -1,119 +1,124 @@
-import { useState } from "react"
-import { AlertTriangle, ChevronDown, ChevronUp, Clock, ExternalLink } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Clock, ExternalLink } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+
+interface NewsItem {
+  id: string
+  title: string
+  summary: string
+  category: 'vulnerability' | 'breach' | 'tool' | 'technique'
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  publishedAt: Date
+  source: string
+  url?: string
+}
 
 export function NewsCard() {
-  const [isExpanded, setIsExpanded] = useState(true)
+  const { t } = useTranslation()
 
-  const news = [
+  const newsItems: NewsItem[] = [
     {
-      id: "CVE-2024-001",
-      title: "Critical RCE in Apache Struts",
-      severity: "Critical",
-      date: "2h ago",
-      description: "Remote code execution vulnerability discovered in Apache Struts framework..."
+      id: '1',
+      title: 'Nova vulnerabilidade crítica descoberta no Apache',
+      summary: 'CVE-2024-1234 permite execução remota de código em servidores Apache...',
+      category: 'vulnerability',
+      severity: 'critical',
+      publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      source: 'Security Week'
     },
     {
-      id: "CVE-2024-002", 
-      title: "Windows SMB Protocol Flaw",
-      severity: "High",
-      date: "4h ago",
-      description: "New SMB vulnerability allows privilege escalation on Windows systems..."
+      id: '2',
+      title: 'Novo framework de phishing usando AI',
+      summary: 'Pesquisadores descobrem técnica avançada que usa IA para criar emails...',
+      category: 'technique',
+      severity: 'high',
+      publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
+      source: 'Threat Intel'
     },
     {
-      id: "CVE-2024-003",
-      title: "MySQL Authentication Bypass",
-      severity: "Medium",
-      date: "1d ago",
-      description: "Authentication bypass vulnerability found in MySQL 8.0 series..."
+      id: '3',
+      title: 'Atualização do Metasploit Framework',
+      summary: 'Nova versão inclui exploits para vulnerabilidades recentes...',
+      category: 'tool',
+      severity: 'medium',
+      publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      source: 'Rapid7'
     }
   ]
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'Critical': return 'text-red-400'
-      case 'High': return 'text-orange-400' 
-      case 'Medium': return 'text-yellow-400'
-      default: return 'text-muted-foreground'
+  const getCategoryColor = (category: NewsItem['category']) => {
+    const colors = {
+      vulnerability: 'bg-red-500/20 text-red-400 border-red-500/30',
+      breach: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+      tool: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      technique: 'bg-purple-500/20 text-purple-400 border-purple-500/30'
     }
+    return colors[category]
+  }
+
+  const getSeverityColor = (severity: NewsItem['severity']) => {
+    const colors = {
+      low: 'bg-green-500/20 text-green-400 border-green-500/30',
+      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+      critical: 'bg-red-500/20 text-red-400 border-red-500/30'
+    }
+    return colors[severity]
+  }
+
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date()
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+    
+    if (diffInHours < 1) return 'Agora mesmo'
+    if (diffInHours < 24) return `${diffInHours}h atrás`
+    return `${Math.floor(diffInHours / 24)}d atrás`
   }
 
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border border-glass-border hover:border-primary/20 transition-all duration-300">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-primary flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5" />
-            <span>CVE Feed</span>
-          </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="h-8 w-8 p-0 hover:bg-glass"
-          >
-            {isExpanded ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
+    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
+      <CardHeader>
+        <CardTitle className="text-sm font-medium">
+          {t('dashboard.news', 'Últimas Notícias')}
+        </CardTitle>
       </CardHeader>
-      
-      {isExpanded && (
-        <CardContent className="pt-0 animate-fade-in">
-          <div className="space-y-3">
-            {news.map((item) => (
-              <div 
-                key={item.id}
-                className="p-3 bg-glass-gradient border border-glass-border rounded-lg hover:border-primary/30 transition-all duration-300 group"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-mono text-muted-foreground">
-                      {item.id}
-                    </span>
-                    <span className={`text-xs font-semibold ${getSeverityColor(item.severity)}`}>
-                      {item.severity}
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    <span>{item.date}</span>
-                  </div>
-                </div>
-                
-                <h4 className="text-sm font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
-                  {item.title}
-                </h4>
-                
-                <p className="text-xs text-muted-foreground mb-2">
-                  {item.description}
-                </p>
-                
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 px-2 text-xs hover:bg-primary/10 hover:text-primary"
-                >
-                  <ExternalLink className="h-3 w-3 mr-1" />
-                  Details
-                </Button>
-              </div>
-            ))}
-          </div>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full mt-3 border-glass-border hover:border-primary/30 hover:bg-primary/5"
+      <CardContent className="space-y-4">
+        {newsItems.map((item) => (
+          <div 
+            key={item.id}
+            className="p-3 rounded-lg bg-black/20 border border-white/10 hover:bg-black/30 transition-colors cursor-pointer group"
           >
-            View All CVEs
-          </Button>
-        </CardContent>
-      )}
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <div className="flex gap-2">
+                <Badge className={`text-xs ${getCategoryColor(item.category)}`}>
+                  {t(`news.category.${item.category}`, item.category)}
+                </Badge>
+                <Badge className={`text-xs ${getSeverityColor(item.severity)}`}>
+                  {t(`news.severity.${item.severity}`, item.severity)}
+                </Badge>
+              </div>
+              <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            
+            <h3 className="font-medium text-sm text-white mb-1 line-clamp-2">
+              {item.title}
+            </h3>
+            
+            <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+              {item.summary}
+            </p>
+            
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>{item.source}</span>
+              <div className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                <span>{formatTimeAgo(item.publishedAt)}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </CardContent>
     </Card>
   )
 }

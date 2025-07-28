@@ -1,73 +1,161 @@
-import { useState } from "react"
-import { Cpu, HardDrive, Wifi, Shield, ChevronDown, ChevronUp } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { Cpu, HardDrive, Wifi, Shield, Activity } from 'lucide-react'
+import { useBlackRatStore } from '@/store/blackrat-store'
+import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
 
 export function SystemStatusCard() {
-  const [isExpanded, setIsExpanded] = useState(true)
+  const { t } = useTranslation()
+  const { systemMetrics, updateSystemMetrics } = useBlackRatStore()
 
-  const systemStats = [
-    { label: "CPU Usage", value: "23%", icon: Cpu, color: "text-primary" },
-    { label: "RAM Usage", value: "4.2/16 GB", icon: HardDrive, color: "text-primary" },
-    { label: "VPN Status", value: "Connected", icon: Shield, color: "text-primary" },
-    { label: "Network", value: "192.168.1.100", icon: Wifi, color: "text-muted-foreground" }
+  // Simulate real-time metrics updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateSystemMetrics({
+        cpu: Math.max(10, Math.min(90, systemMetrics.cpu + (Math.random() - 0.5) * 10)),
+        ram: {
+          ...systemMetrics.ram,
+          used: Math.max(1, Math.min(15, systemMetrics.ram.used + (Math.random() - 0.5) * 0.5))
+        }
+      })
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [systemMetrics.cpu, systemMetrics.ram.used, updateSystemMetrics])
+
+  const metrics = [
+    {
+      label: t('system.cpu', 'CPU'),
+      value: systemMetrics.cpu,
+      max: 100,
+      unit: '%',
+      icon: Cpu,
+      color: systemMetrics.cpu > 80 ? 'bg-red-500' : systemMetrics.cpu > 60 ? 'bg-yellow-500' : 'bg-emerald-500'
+    },
+    {
+      label: t('system.ram', 'RAM'),
+      value: systemMetrics.ram.used,
+      max: systemMetrics.ram.total,
+      unit: 'GB',
+      icon: HardDrive,
+      color: (systemMetrics.ram.used / systemMetrics.ram.total) > 0.8 ? 'bg-red-500' : 'bg-emerald-500'
+    }
   ]
 
+  const networkStatus = [
+    {
+      label: t('system.network', 'Rede'),
+      value: systemMetrics.network,
+      icon: Wifi,
+      status: 'connected'
+    },
+    {
+      label: t('system.vpn', 'VPN'),
+      value: systemMetrics.vpnStatus ? t('common.connected') : t('common.disconnected'),
+      icon: Shield,
+      status: systemMetrics.vpnStatus ? 'connected' : 'disconnected'
+    },
+    {
+      label: t('system.shells', 'Shells'),
+      value: `${systemMetrics.activeShells} ativas`,
+      icon: Activity,
+      status: systemMetrics.activeShells > 0 ? 'connected' : 'idle'
+    }
+  ]
+
+  const getStatusColor = (status: string) => {
+    const colors = {
+      connected: 'text-emerald-400',
+      disconnected: 'text-red-400',
+      idle: 'text-yellow-400'
+    }
+    return colors[status as keyof typeof colors] || 'text-gray-400'
+  }
+
+  const getStatusBadgeColor = (status: string) => {
+    const colors = {
+      connected: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+      disconnected: 'bg-red-500/20 text-red-400 border-red-500/30',
+      idle: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+    }
+    return colors[status as keyof typeof colors] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+  }
+
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border border-glass-border hover:border-primary/20 transition-all duration-300">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-primary flex items-center space-x-2">
-            <Shield className="h-5 w-5" />
-            <span>System Status</span>
-          </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="h-8 w-8 p-0 hover:bg-glass"
-          >
-            {isExpanded ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
+    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
+      <CardHeader>
+        <CardTitle className="text-sm font-medium">
+          {t('dashboard.systemStatus', 'Status do Sistema')}
+        </CardTitle>
       </CardHeader>
-      
-      {isExpanded && (
-        <CardContent className="pt-0 animate-fade-in">
-          <div className="grid grid-cols-2 gap-4">
-            {systemStats.map((stat) => (
-              <div key={stat.label} className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                  <span className="text-sm text-muted-foreground">{stat.label}</span>
+      <CardContent className="space-y-4">
+        {/* Resource Usage */}
+        <div className="space-y-3">
+          {metrics.map((metric) => {
+            const Icon = metric.icon
+            const percentage = (metric.value / metric.max) * 100
+            
+            return (
+              <div key={metric.label} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-white">{metric.label}</span>
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    {metric.value.toFixed(1)}{metric.unit} / {metric.max}{metric.unit}
+                  </span>
                 </div>
-                <p className="text-sm font-mono font-semibold text-foreground">
-                  {stat.value}
-                </p>
+                <Progress 
+                  value={percentage} 
+                  className="h-2"
+                />
               </div>
+            )
+          })}
+        </div>
+
+        {/* Network Status */}
+        <div className="space-y-2 pt-2 border-t border-white/10">
+          {networkStatus.map((item) => {
+            const Icon = item.icon
+            return (
+              <div key={item.label} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Icon className={`h-4 w-4 ${getStatusColor(item.status)}`} />
+                  <span className="text-sm text-white">{item.label}</span>
+                </div>
+                <Badge className={`text-xs ${getStatusBadgeColor(item.status)}`}>
+                  {item.value}
+                </Badge>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Open Ports */}
+        <div className="pt-2 border-t border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-white">{t('system.openPorts', 'Portas Abertas')}</span>
+            <Badge variant="secondary" className="text-xs">
+              {systemMetrics.openPorts.length}
+            </Badge>
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {systemMetrics.openPorts.map((port) => (
+              <Badge 
+                key={port} 
+                variant="outline" 
+                className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30"
+              >
+                {port}
+              </Badge>
             ))}
           </div>
-          
-          {/* Active Ports */}
-          <div className="mt-4 pt-4 border-t border-glass-border">
-            <h4 className="text-sm font-semibold text-muted-foreground mb-2">Active Ports</h4>
-            <div className="flex flex-wrap gap-2">
-              {[22, 80, 443, 8080].map((port) => (
-                <span 
-                  key={port} 
-                  className="px-2 py-1 bg-secondary text-secondary-foreground text-xs font-mono rounded border border-glass-border"
-                >
-                  :{port}
-                </span>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      )}
+        </div>
+      </CardContent>
     </Card>
   )
 }
