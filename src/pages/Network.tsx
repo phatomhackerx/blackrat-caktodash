@@ -1,12 +1,41 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { motion } from "framer-motion"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { BlackRatSidebar } from "@/components/BlackRatSidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Wifi, Globe, Shield, Router, Smartphone, Monitor } from "lucide-react"
+import { useBlackRatStore } from "@/store/blackrat-store"
+import { Wifi, Globe, Shield, Router, Smartphone, Monitor, Play, Search } from "lucide-react"
 
 const Network = () => {
+  const { t } = useTranslation()
+  const { addLog, addTarget } = useBlackRatStore()
+
+  const startNetworkScan = () => {
+    addLog({
+      level: 'info',
+      source: 'Network',
+      message: 'Network discovery scan initiated'
+    })
+  }
+
+  const addToWatchlist = (device: any) => {
+    addTarget({
+      name: device.name,
+      ip: device.ip,
+      description: `${device.vendor} ${device.type}`,
+      tags: [device.type, device.vendor],
+      priority: 'medium',
+      status: 'unknown'
+    })
+    addLog({
+      level: 'info',
+      source: 'Network',
+      message: `Device ${device.name} added to watchlist`
+    })
+  }
   const networkNodes = [
     {
       id: 1,
@@ -103,7 +132,12 @@ const Network = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
           <BlackRatSidebar />
@@ -113,7 +147,7 @@ const Network = () => {
               <SidebarTrigger className="mr-4" />
               <div className="flex items-center space-x-4">
                 <Wifi className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold text-primary">Network Discovery</h1>
+                <h1 className="text-xl font-bold text-primary">{t('sidebar.network')}</h1>
                 <Badge className="bg-blue-900/50 text-blue-400 border-blue-800">
                   {networkNodes.length} Devices
                 </Badge>
@@ -200,7 +234,12 @@ const Network = () => {
                               <Shield className="h-3 w-3 mr-1" />
                               Scan Ports
                             </Button>
-                            <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="border-glass-border hover:border-primary/30"
+                              onClick={() => addToWatchlist(node)}
+                            >
                               Add to Watchlist
                             </Button>
                           </div>
@@ -244,7 +283,11 @@ const Network = () => {
                   </div>
                   
                   <div className="mt-6 flex justify-center space-x-4">
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Button 
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      onClick={startNetworkScan}
+                    >
+                      <Play className="h-4 w-4 mr-2" />
                       Start Network Scan
                     </Button>
                     <Button variant="outline" className="border-glass-border hover:border-primary/30">
@@ -257,7 +300,7 @@ const Network = () => {
           </div>
         </div>
       </SidebarProvider>
-    </div>
+    </motion.div>
   )
 }
 

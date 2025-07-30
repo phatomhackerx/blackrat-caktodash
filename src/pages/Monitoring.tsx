@@ -1,19 +1,60 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import { motion } from "framer-motion"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { BlackRatSidebar } from "@/components/BlackRatSidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { useBlackRatStore } from "@/store/blackrat-store"
 import { Activity, Cpu, HardDrive, Wifi, Users, AlertTriangle, Eye } from "lucide-react"
 
 const Monitoring = () => {
+  const { t } = useTranslation()
+  const { systemMetrics, addLog } = useBlackRatStore()
   const [activeAlerts, setActiveAlerts] = useState(3)
 
-  const systemMetrics = [
-    { label: "CPU Usage", value: "23%", status: "normal", icon: Cpu },
-    { label: "Memory Usage", value: "68%", status: "warning", icon: HardDrive },
-    { label: "Network I/O", value: "1.2 GB/s", status: "high", icon: Wifi },
-    { label: "Active Sessions", value: "15", status: "normal", icon: Users }
+  // Real-time monitoring updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Simulate random security alerts
+      if (Math.random() > 0.95) {
+        addLog({
+          level: 'warning',
+          source: 'Monitoring',
+          message: 'Suspicious activity detected'
+        })
+      }
+    }, 10000)
+
+    return () => clearInterval(interval)
+  }, [addLog])
+
+  const realTimeMetrics = [
+    { 
+      label: "CPU Usage", 
+      value: `${systemMetrics.cpuUsage.toFixed(1)}%`, 
+      status: systemMetrics.cpuUsage > 80 ? "high" : systemMetrics.cpuUsage > 60 ? "warning" : "normal", 
+      icon: Cpu 
+    },
+    { 
+      label: "Memory Usage", 
+      value: `${systemMetrics.memoryUsage.toFixed(1)}%`, 
+      status: systemMetrics.memoryUsage > 80 ? "high" : systemMetrics.memoryUsage > 60 ? "warning" : "normal", 
+      icon: HardDrive 
+    },
+    { 
+      label: "Network I/O", 
+      value: `${(systemMetrics.networkSpeed / 1000).toFixed(1)} GB/s`, 
+      status: systemMetrics.networkSpeed > 800 ? "high" : "normal", 
+      icon: Wifi 
+    },
+    { 
+      label: "Active Sessions", 
+      value: systemMetrics.activeConnections.toString(), 
+      status: "normal", 
+      icon: Users 
+    }
   ]
 
   const alerts = [
@@ -78,7 +119,12 @@ const Monitoring = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
           <BlackRatSidebar />
@@ -88,7 +134,7 @@ const Monitoring = () => {
               <SidebarTrigger className="mr-4" />
               <div className="flex items-center space-x-4">
                 <Activity className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold text-primary">System Monitoring</h1>
+                <h1 className="text-xl font-bold text-primary">{t('monitoring.title')}</h1>
                 <div className="flex items-center space-x-2">
                   {activeAlerts > 0 && (
                     <Badge className="bg-red-900/50 text-red-400 border-red-800 animate-pulse">
@@ -107,7 +153,7 @@ const Monitoring = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {systemMetrics.map((metric) => (
+                    {realTimeMetrics.map((metric) => (
                       <div key={metric.label} className="p-4 bg-glass-gradient border border-glass-border rounded-lg">
                         <div className="flex items-center space-x-3 mb-2">
                           <metric.icon className={`h-5 w-5 ${getStatusColor(metric.status)}`} />
@@ -227,7 +273,7 @@ const Monitoring = () => {
           </div>
         </div>
       </SidebarProvider>
-    </div>
+    </motion.div>
   )
 }
 

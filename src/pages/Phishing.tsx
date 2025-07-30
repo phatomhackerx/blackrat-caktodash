@@ -1,14 +1,29 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { motion } from "framer-motion"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { BlackRatSidebar } from "@/components/BlackRatSidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Mail, Users, Target, Eye, Globe, Send } from "lucide-react"
+import { useBlackRatStore } from "@/store/blackrat-store"
+import { Mail, Users, Target, Eye, Globe, Send, Play, Download } from "lucide-react"
 
 const Phishing = () => {
+  const { t } = useTranslation()
+  const { addLog } = useBlackRatStore()
   const [campaignName, setCampaignName] = useState("")
+
+  const createCampaign = () => {
+    if (!campaignName.trim()) return
+    addLog({
+      level: 'info',
+      source: 'Phishing',
+      message: `New campaign created: ${campaignName}`
+    })
+    setCampaignName("")
+  }
 
   const templates = [
     {
@@ -73,7 +88,12 @@ const Phishing = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
           <BlackRatSidebar />
@@ -83,7 +103,7 @@ const Phishing = () => {
               <SidebarTrigger className="mr-4" />
               <div className="flex items-center space-x-4">
                 <Mail className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold text-primary">Phishing Campaigns</h1>
+                <h1 className="text-xl font-bold text-primary">{t('sidebar.phishing')}</h1>
               </div>
             </header>
 
@@ -104,7 +124,10 @@ const Phishing = () => {
                       onChange={(e) => setCampaignName(e.target.value)}
                       className="bg-terminal-bg border-glass-border text-primary"
                     />
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Button 
+                      onClick={createCampaign}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
                       Create Campaign
                     </Button>
                   </div>
@@ -237,7 +260,7 @@ const Phishing = () => {
           </div>
         </div>
       </SidebarProvider>
-    </div>
+    </motion.div>
   )
 }
 

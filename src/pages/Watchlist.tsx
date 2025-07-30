@@ -1,16 +1,22 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { motion } from "framer-motion"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { BlackRatSidebar } from "@/components/BlackRatSidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Target, Plus, Activity, Clock, Eye, Trash2 } from "lucide-react"
+import { useBlackRatStore } from "@/store/blackrat-store"
+import { Target, Plus, Activity, Clock, Eye, Trash2, Upload } from "lucide-react"
 
 const Watchlist = () => {
+  const { t } = useTranslation()
+  const { targets, addTarget, removeTarget, addLog } = useBlackRatStore()
   const [newTarget, setNewTarget] = useState("")
 
-  const targets = [
+  // Mock data for demo
+  const mockTargets = [
     {
       id: 1,
       name: "Corporate Web Server",
@@ -92,14 +98,55 @@ const Watchlist = () => {
     }
   }
 
-  const addTarget = () => {
+  const handleAddTarget = () => {
     if (!newTarget.trim()) return
-    // Logic to add new target would go here
+    
+    // Parse IP address or domain
+    const isIP = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(newTarget)
+    const isDomain = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/.test(newTarget)
+    
+    addTarget({
+      name: isIP ? `Server ${newTarget}` : isDomain ? newTarget : `Target ${newTarget}`,
+      ip: newTarget,
+      description: `Added manually by user`,
+      tags: [isIP ? 'ip' : isDomain ? 'domain' : 'custom'],
+      priority: 'medium',
+      status: 'unknown'
+    })
+    
+    addLog({
+      level: 'info',
+      source: 'Watchlist',
+      message: `New target added: ${newTarget}`
+    })
+    
     setNewTarget("")
   }
 
+  const handleRemoveTarget = (targetId: string) => {
+    removeTarget(targetId)
+    addLog({
+      level: 'info',
+      source: 'Watchlist',
+      message: `Target removed from watchlist`
+    })
+  }
+
+  const scanTarget = (target: any) => {
+    addLog({
+      level: 'info',
+      source: 'Watchlist',
+      message: `Scanning target: ${target.name} (${target.ip})`
+    })
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
           <BlackRatSidebar />
@@ -109,7 +156,7 @@ const Watchlist = () => {
               <SidebarTrigger className="mr-4" />
               <div className="flex items-center space-x-4">
                 <Target className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold text-primary">Target Watchlist</h1>
+                <h1 className="text-xl font-bold text-primary">{t('watchlist.title')}</h1>
                 <Badge className="bg-blue-900/50 text-blue-400 border-blue-800">
                   {targets.length} Targets
                 </Badge>
@@ -122,24 +169,25 @@ const Watchlist = () => {
                 <CardHeader>
                   <CardTitle className="text-primary flex items-center space-x-2">
                     <Plus className="h-5 w-5" />
-                    <span>Add New Target</span>
+                    <span>{t('watchlist.addTarget')}</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex space-x-4">
                     <Input
-                      placeholder="Enter IP address, domain, or network range..."
+                      placeholder={`${t('watchlist.ipAddress')}, domain, or network range...`}
                       value={newTarget}
                       onChange={(e) => setNewTarget(e.target.value)}
                       className="bg-terminal-bg border-glass-border text-primary"
                     />
                     <Button 
-                      onClick={addTarget}
+                      onClick={handleAddTarget}
                       className="bg-primary text-primary-foreground hover:bg-primary/90"
                     >
-                      Add Target
+                      {t('watchlist.addTarget')}
                     </Button>
                     <Button variant="outline" className="border-glass-border hover:border-primary/30">
+                      <Upload className="h-4 w-4 mr-2" />
                       Import List
                     </Button>
                   </div>
@@ -153,7 +201,7 @@ const Watchlist = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {targets.map((target) => (
+                    {mockTargets.map((target) => (
                       <div key={target.id} className="p-4 bg-glass-gradient border border-glass-border rounded-lg hover:border-primary/30 transition-all duration-300">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center space-x-3">
@@ -205,7 +253,12 @@ const Watchlist = () => {
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-muted-foreground">Last seen: {target.lastSeen}</span>
                           <div className="flex space-x-2">
-                            <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="border-glass-border hover:border-primary/30"
+                              onClick={() => scanTarget(target)}
+                            >
                               <Activity className="h-3 w-3 mr-1" />
                               Scan
                             </Button>
@@ -213,7 +266,12 @@ const Watchlist = () => {
                               <Eye className="h-3 w-3 mr-1" />
                               Details
                             </Button>
-                            <Button variant="outline" size="sm" className="border-glass-border hover:border-destructive/30 hover:text-destructive">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="border-glass-border hover:border-destructive/30 hover:text-destructive"
+                              onClick={() => handleRemoveTarget(target.id)}
+                            >
                               <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
@@ -254,7 +312,7 @@ const Watchlist = () => {
           </div>
         </div>
       </SidebarProvider>
-    </div>
+    </motion.div>
   )
 }
 

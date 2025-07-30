@@ -29,6 +29,11 @@ export interface SystemMetrics {
   vpnStatus: boolean;
   activeShells: number;
   openPorts: number[];
+  cpuUsage: number;
+  memoryUsage: number;
+  networkSpeed: number;
+  activeConnections: number;
+  lastUpdate: Date;
 }
 
 export interface BlackRatConfig {
@@ -115,7 +120,12 @@ const defaultSystemMetrics: SystemMetrics = {
   network: '192.168.1.100',
   vpnStatus: true,
   activeShells: 3,
-  openPorts: [22, 80, 443, 8080]
+  openPorts: [22, 80, 443, 8080],
+  cpuUsage: 23,
+  memoryUsage: 26.25,
+  networkSpeed: 125.3,
+  activeConnections: 15,
+  lastUpdate: new Date()
 };
 
 export const useBlackRatStore = create<BlackRatState>()(

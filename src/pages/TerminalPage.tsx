@@ -1,12 +1,17 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import { motion } from "framer-motion"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { BlackRatSidebar } from "@/components/BlackRatSidebar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Terminal, Send, Folder, Plus, X } from "lucide-react"
+import { useBlackRatStore } from "@/store/blackrat-store"
+import { Terminal, Send, Folder, Plus, X, Wifi, Database, Globe } from "lucide-react"
 
 const TerminalPage = () => {
+  const { t } = useTranslation()
+  const { addLog, systemMetrics, updateSystemMetrics } = useBlackRatStore()
   const [sessions, setSessions] = useState([
     { id: 1, name: "Terminal 1", active: true },
     { id: 2, name: "Remote SSH", active: false }
@@ -44,10 +49,39 @@ const TerminalPage = () => {
     setSessions(sessions.map(s => ({ ...s, active: s.id === id })))
   }
 
+  // Real-time system monitoring
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Simulate system metrics updates
+      updateSystemMetrics({
+        cpu: Math.random() * 100,
+        ram: { used: Math.random() * 16, total: 16 },
+        network: "192.168.1.100",
+        vpnStatus: true,
+        activeShells: Math.floor(Math.random() * 10),
+        openPorts: [22, 80, 443],
+        cpuUsage: Math.random() * 100,
+        memoryUsage: Math.random() * 100,
+        networkSpeed: Math.random() * 1000,
+        activeConnections: Math.floor(Math.random() * 50),
+        lastUpdate: new Date()
+      })
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [updateSystemMetrics])
+
   const handleCommand = () => {
     if (!command.trim()) return
     
     const newOutput = [...output, `root@blackrat:/opt/blackrat# ${command}`]
+    
+    // Log command execution
+    addLog({
+      level: 'info',
+      source: 'Terminal',
+      message: `Terminal command executed: ${command}`
+    })
     
     // Enhanced command responses
     switch (command.toLowerCase()) {
@@ -72,11 +106,11 @@ const TerminalPage = () => {
         newOutput.push("╔═══════════════════════════════════╗")
         newOutput.push("║         SYSTEM STATUS             ║")
         newOutput.push("╠═══════════════════════════════════╣")
-        newOutput.push("║ CPU Usage:      23%               ║")
-        newOutput.push("║ RAM Usage:      4.2/16 GB         ║")
+        newOutput.push(`║ CPU Usage:      ${systemMetrics.cpuUsage.toFixed(1)}%               ║`)
+        newOutput.push(`║ RAM Usage:      ${systemMetrics.memoryUsage.toFixed(1)}%              ║`)
         newOutput.push("║ VPN Status:     Connected          ║")
         newOutput.push("║ Network:        192.168.1.100      ║")
-        newOutput.push("║ Active Shells:  3                 ║")
+        newOutput.push(`║ Active Shells:  ${systemMetrics.activeConnections}                 ║`)
         newOutput.push("╚═══════════════════════════════════╝")
         break
       case 'whoami':
@@ -117,9 +151,28 @@ const TerminalPage = () => {
           newOutput.push(`Nmap scan report for ${target}`)
           newOutput.push("Host is up (0.001s latency).")
           newOutput.push("PORT     STATE SERVICE")
-          newOutput.push("22/tcp   open  ssh")
-          newOutput.push("80/tcp   open  http")
-          newOutput.push("443/tcp  open  https")
+          
+          // Simulate realistic port scanning
+          const commonPorts = [
+            { port: 22, service: "ssh", open: Math.random() > 0.3 },
+            { port: 80, service: "http", open: Math.random() > 0.4 },
+            { port: 443, service: "https", open: Math.random() > 0.2 },
+            { port: 21, service: "ftp", open: Math.random() > 0.8 },
+            { port: 3389, service: "rdp", open: Math.random() > 0.7 },
+            { port: 3306, service: "mysql", open: Math.random() > 0.6 }
+          ]
+          
+          commonPorts.forEach(({ port, service, open }) => {
+            if (open) {
+              newOutput.push(`${port}/tcp   open  ${service}`)
+            }
+          })
+          
+          addLog({
+            level: 'success',
+            source: 'Terminal',
+            message: `Nmap scan completed for ${target}`
+          })
         } else if (command.startsWith('cat ')) {
           const file = command.substring(4)
           if (file === 'targets.txt') {
@@ -130,6 +183,38 @@ const TerminalPage = () => {
           } else {
             newOutput.push(`cat: ${file}: No such file or directory`)
           }
+        } else if (command.startsWith('ping ')) {
+          const target = command.substring(5)
+          newOutput.push(`PING ${target} (${target}): 56 data bytes`)
+          for (let i = 1; i <= 3; i++) {
+            const time = (Math.random() * 50 + 1).toFixed(1)
+            newOutput.push(`64 bytes from ${target}: icmp_seq=${i} ttl=64 time=${time} ms`)
+          }
+          addLog({
+            level: 'info',
+            source: 'Terminal',
+            message: `Ping completed for ${target}`
+          })
+        } else if (command.startsWith('whois ')) {
+          const domain = command.substring(6)
+          newOutput.push(`Domain Name: ${domain.toUpperCase()}`)
+          newOutput.push(`Registry Domain ID: D${Math.floor(Math.random() * 10000000000)}`)
+          newOutput.push("Registrar: GoDaddy.com, LLC")
+          newOutput.push("Creation Date: 2015-03-15T10:45:00Z")
+          newOutput.push("Registry Expiry Date: 2025-03-15T10:45:00Z")
+        } else if (command.startsWith('msfvenom ')) {
+          const params = command.substring(9)
+          newOutput.push("Generating payload...")
+          newOutput.push(`Parameters: ${params}`)
+          newOutput.push("No encoder specified, outputting raw payload")
+          newOutput.push("Payload size: 4096 bytes")
+          newOutput.push("Final size of executable: 73802 bytes")
+          newOutput.push("Saved as: payload.exe")
+          addLog({
+            level: 'success',
+            source: 'Terminal',
+            message: `Payload generated with msfvenom`
+          })
         } else {
           newOutput.push(`bash: ${command}: command not found`)
         }
@@ -141,7 +226,12 @@ const TerminalPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
           <BlackRatSidebar />
@@ -151,7 +241,7 @@ const TerminalPage = () => {
               <SidebarTrigger className="mr-4" />
               <div className="flex items-center space-x-4">
                 <Terminal className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold text-primary">Advanced Terminal</h1>
+                <h1 className="text-xl font-bold text-primary">{t('terminal.title')}</h1>
               </div>
             </header>
 
@@ -228,7 +318,7 @@ const TerminalPage = () => {
                       value={command}
                       onChange={(e) => setCommand(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleCommand()}
-                      placeholder="Enter command..."
+                      placeholder={t('terminal.command')}
                       className="bg-terminal-bg border-glass-border font-mono text-sm text-primary placeholder-muted-foreground"
                       autoFocus
                     />
@@ -241,9 +331,9 @@ const TerminalPage = () => {
                     </Button>
                   </div>
                   
-                  {/* Quick Commands */}
+                   {/* Quick Commands */}
                   <div className="flex flex-wrap gap-2 mt-3">
-                    {['help', 'status', 'ls', 'nmap 192.168.1.1', 'exploit', 'clear'].map((cmd) => (
+                    {['help', 'status', 'ls', 'nmap 192.168.1.1', 'ping google.com', 'whois example.com', 'exploit', 'clear'].map((cmd) => (
                       <Button
                         key={cmd}
                         variant="outline"
@@ -264,7 +354,7 @@ const TerminalPage = () => {
           </div>
         </div>
       </SidebarProvider>
-    </div>
+    </motion.div>
   )
 }
 
