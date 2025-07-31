@@ -18,7 +18,7 @@ const Watchlist = () => {
   // Mock data for demo
   const mockTargets = [
     {
-      id: 1,
+      id: "1",
       name: "Corporate Web Server",
       ip: "192.168.1.50",
       ports: [80, 443, 22, 8080],
@@ -29,7 +29,7 @@ const Watchlist = () => {
       notes: "Main web application server"
     },
     {
-      id: 2,
+      id: "2",
       name: "Mail Server",
       ip: "192.168.1.25", 
       ports: [25, 110, 143, 993, 995],
@@ -40,7 +40,7 @@ const Watchlist = () => {
       notes: "Exchange server with potential vulnerabilities"
     },
     {
-      id: 3,
+      id: "3",
       name: "Database Server",
       ip: "10.0.0.100",
       ports: [3306, 5432, 1433],
@@ -51,7 +51,7 @@ const Watchlist = () => {
       notes: "Contains sensitive customer data"
     },
     {
-      id: 4,
+      id: "4",
       name: "VPN Gateway",
       ip: "203.0.113.10",
       ports: [1723, 4500, 443],
