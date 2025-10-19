@@ -57,18 +57,18 @@ export function BlackRatSidebar() {
   const isActive = (path: string) => currentPath === path
   const getNavClass = (active: boolean) => 
     active 
-      ? "bg-glass-gradient border border-glass-border text-primary font-semibold animate-glow" 
-      : "hover:bg-glass-gradient hover:border hover:border-glass-border transition-all duration-300"
+      ? "bg-accent border border-border text-foreground font-medium" 
+      : "hover:bg-accent/50 hover:border hover:border-border/50 transition-all duration-200"
 
   const getStatusColor = () => {
-    if (systemMetrics.vpnStatus && systemMetrics.cpu < 80) return "bg-emerald-500"
-    if (systemMetrics.cpu > 90) return "bg-red-500"
-    return "bg-yellow-500"
+    if (systemMetrics.vpnStatus && systemMetrics.cpu < 80) return "bg-foreground"
+    if (systemMetrics.cpu > 90) return "bg-muted-foreground"
+    return "bg-muted-foreground/70"
   }
 
   return (
     <Sidebar
-      className={`${collapsed ? "w-16" : "w-64"} bg-glass-gradient backdrop-blur-glass border-r border-glass-border transition-all duration-300`}
+      className={`${collapsed ? "w-16" : "w-64"} bg-background border-r border-border transition-all duration-200`}
       collapsible="icon"
     >
       <SidebarContent className="p-4">
@@ -108,7 +108,7 @@ export function BlackRatSidebar() {
                      <NavLink 
                        to={item.url} 
                        end 
-                       className={`${getNavClass(isActive(item.url))} p-3 rounded-lg flex items-center space-x-3 group relative`}
+                       className={`${getNavClass(isActive(item.url))} p-2.5 rounded-md flex items-center space-x-3 group relative`}
                      >
                        <div className="relative">
                          <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -130,14 +130,14 @@ export function BlackRatSidebar() {
         {/* Status Indicator */}
         {!collapsed && (
           <div className="mt-auto pt-6">
-            <div className="bg-glass-gradient border border-glass-border rounded-lg p-3">
+            <div className="bg-card border border-border rounded-md p-3">
               <div className="flex items-center space-x-2">
                 <div className={`w-2 h-2 rounded-full animate-pulse-subtle ${getStatusColor()}`}></div>
                 <span className="text-xs text-muted-foreground font-mono">
                   {systemMetrics.vpnStatus ? t("common.connected") : t("common.disconnected")}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1 font-mono">
                 CPU: {systemMetrics.cpu}% | VPN: {systemMetrics.vpnStatus ? "ON" : "OFF"}
               </p>
             </div>

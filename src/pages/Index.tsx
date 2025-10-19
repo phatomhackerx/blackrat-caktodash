@@ -32,12 +32,12 @@ const Index = () => {
           <BlackRatSidebar />
           
           <div className="flex-1 flex flex-col">
-            <header className="h-16 border-b border-glass-border bg-glass-gradient backdrop-blur-glass flex items-center justify-between px-6">
+            <header className="h-16 border-b border-border bg-background backdrop-blur-sm flex items-center justify-between px-6">
               <div className="flex items-center">
                 <SidebarTrigger className="mr-4" />
                 <div className="flex items-center space-x-4">
-                  <Shield className="h-6 w-6 text-primary" />
-                  <h1 className="text-xl font-bold text-primary">{t('dashboard.title')}</h1>
+                  <Shield className="h-6 w-6 text-foreground" />
+                  <h1 className="text-xl font-semibold text-foreground tracking-tight">{t('dashboard.title')}</h1>
                 </div>
               </div>
               <LanguageSwitcher />
@@ -53,16 +53,16 @@ const Index = () => {
                 {/* Welcome Message */}
                 <div className="text-center mb-8">
                   <motion.h2 
-                    className="text-3xl font-bold text-primary mb-2"
-                    initial={{ scale: 0.9 }}
+                    className="text-4xl font-semibold text-foreground mb-3 tracking-tight"
+                    initial={{ scale: 0.95 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.1, duration: 0.3 }}
                   >
                     {t('dashboard.welcome')}
                   </motion.h2>
-                  <p className="text-muted-foreground">{t('dashboard.subtitle')}</p>
+                  <p className="text-muted-foreground text-base">{t('dashboard.subtitle')}</p>
                   {config.demoMode && (
-                    <div className="mt-2 inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
+                    <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs bg-muted text-muted-foreground border border-border">
                       Demo Mode Active
                     </div>
                   )}
@@ -74,7 +74,7 @@ const Index = () => {
                     className="xl:col-span-1"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
+                    transition={{ delay: 0.1, duration: 0.3 }}
                   >
                     <SystemStatusCard />
                   </motion.div>
@@ -83,7 +83,7 @@ const Index = () => {
                     className="xl:col-span-1"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
+                    transition={{ delay: 0.15, duration: 0.3 }}
                   >
                     <QuickAccessCard />
                   </motion.div>
@@ -92,7 +92,7 @@ const Index = () => {
                     className="xl:col-span-1"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 }}
+                    transition={{ delay: 0.2, duration: 0.3 }}
                   >
                     <NewsCard />
                   </motion.div>
@@ -101,16 +101,16 @@ const Index = () => {
                     className="lg:col-span-2 xl:col-span-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
+                    transition={{ delay: 0.25, duration: 0.3 }}
                   >
                     <TerminalCard />
                   </motion.div>
                   
                   <motion.div 
                     className="xl:col-span-1"
-                    initial={{ opacity: 0, scale: 0.9 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.7 }}
+                    transition={{ delay: 0.3, duration: 0.3 }}
                   >
                     <WatchlistCard />
                   </motion.div>

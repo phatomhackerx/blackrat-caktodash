@@ -72,17 +72,17 @@ export default {
 				'mono': ['JetBrains Mono', 'Consolas', 'monospace']
 			},
 			backgroundImage: {
-				'glass-gradient': 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-				'terminal-gradient': 'linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 100%)'
+				'glass-gradient': 'linear-gradient(145deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%)',
+				'terminal-gradient': 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.98) 100%)'
 			},
 			backdropBlur: {
 				'glass': '20px'
 			},
 			animation: {
-				'slide-in': 'slideIn 0.3s ease-out',
-				'fade-in': 'fadeIn 0.3s ease-out',
-				'pulse-subtle': 'pulseSubtle 2s infinite',
-				'glow': 'glow 2s ease-in-out infinite alternate'
+				'slide-in': 'slideIn 0.2s ease-out',
+				'fade-in': 'fadeIn 0.2s ease-out',
+				'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
+				'glow': 'glow 3s ease-in-out infinite alternate'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -119,8 +119,8 @@ export default {
 					'50%': { opacity: '1' }
 				},
 				glow: {
-					'0%': { boxShadow: '0 0 5px rgba(255,255,255,0.1)' },
-					'100%': { boxShadow: '0 0 20px rgba(255,255,255,0.2)' }
+					'0%': { boxShadow: '0 0 2px rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' },
+					'100%': { boxShadow: '0 0 8px rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.2)' }
 				}
 			}
 		}
