@@ -74,61 +74,41 @@ export function QuickAccessCard() {
     }
   ]
 
-  const getStatusColor = (status: QuickAction['status']) => {
-    const colors = {
-      active: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      idle: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
-      running: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-    }
-    return colors[status]
-  }
-
-  const getStatusText = (status: QuickAction['status']) => {
-    const texts = {
-      active: t('status.active', 'Ativo'),
-      idle: t('status.idle', 'Inativo'),
-      running: t('status.running', 'Executando')
-    }
-    return texts[status]
-  }
 
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
-      <CardHeader>
-        <CardTitle className="text-sm font-medium">
+    <Card className="bg-card border-border hover:border-border/40 transition-all duration-300">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium tracking-tight">
           {t('dashboard.quickAccess', 'Acesso Rápido')}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           {quickActions.map((action) => {
             const Icon = action.icon
             return (
               <Button
                 key={action.id}
                 variant="ghost"
-                className="h-auto p-3 flex flex-col items-start gap-2 hover:bg-black/30 border border-transparent hover:border-white/10 transition-all group"
+                className="h-auto p-3 flex flex-col items-start gap-2.5 hover:bg-accent/50 border border-border/50 hover:border-border transition-all duration-200 group rounded-md"
                 onClick={() => navigate(action.route)}
               >
                 <div className="flex items-center justify-between w-full">
-                  <Icon className="h-4 w-4 text-primary group-hover:text-primary-foreground transition-colors" />
+                  <Icon className="h-4 w-4 text-foreground/70 group-hover:text-foreground transition-colors" />
                   <div className="flex items-center gap-1">
-                    <Badge className={`text-xs ${getStatusColor(action.status)}`}>
-                      {getStatusText(action.status)}
-                    </Badge>
                     {action.count !== undefined && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="outline" className="text-xs font-mono">
                         {action.count}
                       </Badge>
                     )}
                   </div>
                 </div>
                 
-                <div className="text-left">
-                  <div className="font-medium text-xs text-white group-hover:text-primary-foreground transition-colors">
+                <div className="text-left w-full">
+                  <div className="font-medium text-xs text-foreground group-hover:text-foreground transition-colors mb-0.5">
                     {action.title}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground font-light">
                     {action.description}
                   </div>
                 </div>

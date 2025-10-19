@@ -294,9 +294,9 @@ export function TerminalCard() {
   }
 
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
+    <Card className="bg-card border-border hover:border-border/40 transition-all duration-300">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="text-base font-medium flex items-center gap-2 tracking-tight">
           <Terminal className="h-4 w-4" />
           {t('terminal.title', 'Terminal')}
         </CardTitle>
@@ -304,29 +304,30 @@ export function TerminalCard() {
           variant="ghost"
           size="sm"
           onClick={() => setIsExpanded(!isExpanded)}
+          className="h-7 w-7 p-0"
         >
-          {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+          {isExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
         </Button>
       </CardHeader>
       <CardContent>
         <div className={`${isExpanded ? 'h-96' : 'h-48'} transition-all duration-300`}>
-          <ScrollArea className="h-full" ref={scrollRef}>
-            <div className="font-mono text-xs space-y-1">
+          <ScrollArea className="h-full terminal-scroll" ref={scrollRef}>
+            <div className="font-mono text-xs space-y-1 font-light">
               {terminalHistory.map((entry) => (
                 <div key={entry.id}>
                   {entry.command && (
                     <div className="flex items-center gap-2">
-                      <span className="text-emerald-400">blackrat@kali:~$</span>
-                      <span className="text-white">{entry.command}</span>
+                      <span className="text-foreground/60">blackrat@kali:~$</span>
+                      <span className="text-foreground font-normal">{entry.command}</span>
                     </div>
                   )}
                   {entry.output.map((line, index) => (
                     <div
                       key={index}
                       className={`${
-                        entry.type === 'error' ? 'text-red-400' :
-                        entry.type === 'success' ? 'text-emerald-400' :
-                        'text-gray-300'
+                        entry.type === 'error' ? 'text-muted-foreground/70' :
+                        entry.type === 'success' ? 'text-foreground' :
+                        'text-muted-foreground'
                       } ${entry.command ? 'ml-4' : ''}`}
                     >
                       {line}
@@ -337,13 +338,13 @@ export function TerminalCard() {
             </div>
           </ScrollArea>
           
-          <div className="flex items-center gap-2 mt-2 font-mono text-xs">
-            <span className="text-emerald-400">blackrat@kali:~$</span>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border font-mono text-xs">
+            <span className="text-foreground/60">blackrat@kali:~$</span>
             <Input
               value={currentCommand}
               onChange={(e) => setCurrentCommand(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent border-none p-0 h-auto text-white font-mono text-xs focus-visible:ring-0"
+              className="flex-1 bg-transparent border-none p-0 h-auto text-foreground font-mono text-xs focus-visible:ring-0 font-light"
               placeholder="Digite um comando..."
             />
           </div>

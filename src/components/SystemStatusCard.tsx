@@ -67,50 +67,50 @@ export function SystemStatusCard() {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      connected: 'text-emerald-400',
-      disconnected: 'text-red-400',
-      idle: 'text-yellow-400'
+      connected: 'text-foreground',
+      disconnected: 'text-muted-foreground',
+      idle: 'text-muted-foreground/70'
     }
-    return colors[status as keyof typeof colors] || 'text-gray-400'
+    return colors[status as keyof typeof colors] || 'text-muted-foreground'
   }
 
   const getStatusBadgeColor = (status: string) => {
     const colors = {
-      connected: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-      disconnected: 'bg-red-500/20 text-red-400 border-red-500/30',
-      idle: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+      connected: 'border-foreground/20 bg-foreground/5',
+      disconnected: 'border-border bg-card',
+      idle: 'border-border bg-muted'
     }
-    return colors[status as keyof typeof colors] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+    return colors[status as keyof typeof colors] || 'border-border bg-card'
   }
 
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
-      <CardHeader>
-        <CardTitle className="text-sm font-medium">
+    <Card className="bg-card border-border hover:border-border/40 transition-all duration-300">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium tracking-tight">
           {t('dashboard.systemStatus', 'Status do Sistema')}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-5">
         {/* Resource Usage */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           {metrics.map((metric) => {
             const Icon = metric.icon
             const percentage = (metric.value / metric.max) * 100
             
             return (
-              <div key={metric.label} className="space-y-2">
+              <div key={metric.label} className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-white">{metric.label}</span>
+                  <div className="flex items-center gap-2.5">
+                    <Icon className="h-4 w-4 text-foreground/60" />
+                    <span className="text-sm font-light text-foreground">{metric.label}</span>
                   </div>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs font-mono text-muted-foreground tracking-wider">
                     {metric.value.toFixed(1)}{metric.unit} / {metric.max}{metric.unit}
                   </span>
                 </div>
                 <Progress 
                   value={percentage} 
-                  className="h-2"
+                  className="h-1.5"
                 />
               </div>
             )
@@ -118,16 +118,16 @@ export function SystemStatusCard() {
         </div>
 
         {/* Network Status */}
-        <div className="space-y-2 pt-2 border-t border-white/10">
+        <div className="space-y-3 pt-4 border-t border-border">
           {networkStatus.map((item) => {
             const Icon = item.icon
             return (
-              <div key={item.label} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div key={item.label} className="flex items-center justify-between py-0.5">
+                <div className="flex items-center gap-2.5">
                   <Icon className={`h-4 w-4 ${getStatusColor(item.status)}`} />
-                  <span className="text-sm text-white">{item.label}</span>
+                  <span className="text-sm font-light text-foreground">{item.label}</span>
                 </div>
-                <Badge className={`text-xs ${getStatusBadgeColor(item.status)}`}>
+                <Badge variant="outline" className={`text-xs font-mono ${getStatusBadgeColor(item.status)}`}>
                   {item.value}
                 </Badge>
               </div>
@@ -136,19 +136,19 @@ export function SystemStatusCard() {
         </div>
 
         {/* Open Ports */}
-        <div className="pt-2 border-t border-white/10">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-white">{t('system.openPorts', 'Portas Abertas')}</span>
-            <Badge variant="secondary" className="text-xs">
+        <div className="pt-4 border-t border-border">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-light text-foreground">{t('system.openPorts', 'Portas Abertas')}</span>
+            <Badge variant="outline" className="text-xs font-mono">
               {systemMetrics.openPorts.length}
             </Badge>
           </div>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {systemMetrics.openPorts.map((port) => (
               <Badge 
                 key={port} 
                 variant="outline" 
-                className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30"
+                className="text-xs font-mono bg-foreground/5 hover:bg-foreground/10 transition-colors"
               >
                 {port}
               </Badge>

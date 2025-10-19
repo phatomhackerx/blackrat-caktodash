@@ -47,25 +47,6 @@ export function NewsCard() {
     }
   ]
 
-  const getCategoryColor = (category: NewsItem['category']) => {
-    const colors = {
-      vulnerability: 'bg-red-500/20 text-red-400 border-red-500/30',
-      breach: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      tool: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      technique: 'bg-purple-500/20 text-purple-400 border-purple-500/30'
-    }
-    return colors[category]
-  }
-
-  const getSeverityColor = (severity: NewsItem['severity']) => {
-    const colors = {
-      low: 'bg-green-500/20 text-green-400 border-green-500/30',
-      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      critical: 'bg-red-500/20 text-red-400 border-red-500/30'
-    }
-    return colors[severity]
-  }
 
   const formatTimeAgo = (date: Date) => {
     const now = new Date()
@@ -77,41 +58,38 @@ export function NewsCard() {
   }
 
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
-      <CardHeader>
-        <CardTitle className="text-sm font-medium">
+    <Card className="bg-card border-border hover:border-border/40 transition-all duration-300">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-medium tracking-tight">
           {t('dashboard.news', 'Últimas Notícias')}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3">
         {newsItems.map((item) => (
           <div 
             key={item.id}
-            className="p-3 rounded-lg bg-black/20 border border-white/10 hover:bg-black/30 transition-colors cursor-pointer group"
+            className="p-3 rounded-md bg-accent/30 border border-border hover:bg-accent/50 hover:border-border/60 transition-all duration-200 cursor-pointer group"
           >
             <div className="flex items-start justify-between gap-2 mb-2">
-              <div className="flex gap-2">
-                <Badge className={`text-xs ${getCategoryColor(item.category)}`}>
+              <div className="flex gap-1.5">
+                <Badge variant="outline" className="text-xs font-light">
                   {t(`news.category.${item.category}`, item.category)}
                 </Badge>
-                <Badge className={`text-xs ${getSeverityColor(item.severity)}`}>
-                  {t(`news.severity.${item.severity}`, item.severity)}
-                </Badge>
               </div>
-              <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             
-            <h3 className="font-medium text-sm text-white mb-1 line-clamp-2">
+            <h3 className="font-medium text-sm text-foreground mb-1.5 line-clamp-2 leading-snug">
               {item.title}
             </h3>
             
-            <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+            <p className="text-xs text-muted-foreground font-light mb-2.5 line-clamp-2 leading-relaxed">
               {item.summary}
             </p>
             
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{item.source}</span>
-              <div className="flex items-center gap-1">
+              <span className="font-light">{item.source}</span>
+              <div className="flex items-center gap-1 font-mono">
                 <Clock className="h-3 w-3" />
                 <span>{formatTimeAgo(item.publishedAt)}</span>
               </div>

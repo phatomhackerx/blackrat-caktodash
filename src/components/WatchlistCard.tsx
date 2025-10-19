@@ -19,20 +19,20 @@ export function WatchlistCard() {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      scanning: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      vulnerable: 'bg-red-500/20 text-red-400 border-red-500/30',
-      secure: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-      unknown: 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      scanning: 'border-border bg-accent/30',
+      vulnerable: 'border-border bg-muted',
+      secure: 'border-foreground/20 bg-foreground/5',
+      unknown: 'border-border bg-card'
     }
     return colors[status as keyof typeof colors] || colors.unknown
   }
 
   const getPriorityColor = (priority: string) => {
     const colors = {
-      critical: 'bg-red-500/20 text-red-400 border-red-500/30',
-      high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      low: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      critical: 'border-foreground/30 bg-foreground/10',
+      high: 'border-border bg-muted',
+      medium: 'border-border bg-accent/30',
+      low: 'border-border bg-card'
     }
     return colors[priority as keyof typeof colors] || colors.low
   }
@@ -70,9 +70,9 @@ export function WatchlistCard() {
   const recentTargets = targets.slice(0, 3)
 
   return (
-    <Card className="bg-glass-gradient backdrop-blur-glass border-glass-border">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
+    <Card className="bg-card border-border hover:border-border/40 transition-all duration-300">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="text-base font-medium flex items-center gap-2 tracking-tight">
           <Target className="h-4 w-4" />
           {t('dashboard.watchlist', 'Lista de Alvos')}
         </CardTitle>
@@ -80,11 +80,12 @@ export function WatchlistCard() {
           variant="ghost"
           size="sm"
           onClick={() => navigate('/watchlist')}
+          className="h-7 w-7 p-0"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
         </Button>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2.5">
         {recentTargets.length === 0 ? (
           <div className="text-center py-4">
             <Target className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
@@ -104,20 +105,20 @@ export function WatchlistCard() {
           recentTargets.map((target) => (
             <div 
               key={target.id}
-              className="p-3 rounded-lg bg-black/20 border border-white/10 hover:bg-black/30 transition-colors group cursor-pointer"
+              className="p-3 rounded-md bg-accent/30 border border-border hover:bg-accent/50 hover:border-border/60 transition-all duration-200 group cursor-pointer"
               onClick={() => handleSelectTarget(target)}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-medium text-sm text-white truncate">
+                    <h3 className="font-medium text-sm text-foreground truncate">
                       {target.name}
                     </h3>
-                    <Badge className={`text-xs ${getPriorityColor(target.priority)}`}>
+                    <Badge variant="outline" className={`text-xs font-light ${getPriorityColor(target.priority)}`}>
                       {t(`priority.${target.priority}`, target.priority)}
                     </Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground font-mono">
+                  <p className="text-xs text-muted-foreground font-mono font-light">
                     {target.ip}
                   </p>
                 </div>
@@ -133,14 +134,14 @@ export function WatchlistCard() {
                       <MoreVertical className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent align="end" className="bg-card border-border">
                     <DropdownMenuItem onClick={() => navigate('/scanners')}>
                       <Shield className="h-4 w-4 mr-2" />
                       {t('watchlist.scan', 'Escanear')}
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => handleRemoveTarget(target.id, target.name)}
-                      className="text-red-400"
+                      className="text-muted-foreground"
                     >
                       <Target className="h-4 w-4 mr-2" />
                       {t('watchlist.remove', 'Remover')}
@@ -150,29 +151,29 @@ export function WatchlistCard() {
               </div>
               
               <div className="flex items-center justify-between">
-                <Badge className={`text-xs ${getStatusColor(target.status)}`}>
+                <Badge variant="outline" className={`text-xs font-light ${getStatusColor(target.status)}`}>
                   {t(`status.${target.status}`, target.status)}
                 </Badge>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground font-mono">
                   <Clock className="h-3 w-3" />
                   <span>{formatLastScan(target.lastScan)}</span>
                 </div>
               </div>
               
               {target.ports && target.ports.length > 0 && (
-                <div className="mt-2 pt-2 border-t border-white/10">
+                <div className="mt-2 pt-2 border-t border-border">
                   <div className="flex flex-wrap gap-1">
                     {target.ports.slice(0, 4).map((port) => (
                       <Badge 
                         key={port} 
                         variant="outline" 
-                        className="text-xs bg-blue-500/20 text-blue-400 border-blue-500/30"
+                        className="text-xs font-mono font-light bg-foreground/5 hover:bg-foreground/10"
                       >
                         {port}
                       </Badge>
                     ))}
                     {target.ports.length > 4 && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs font-mono">
                         +{target.ports.length - 4}
                       </Badge>
                     )}
