@@ -37,11 +37,12 @@ export function WatchlistCard() {
     return colors[priority as keyof typeof colors] || colors.low
   }
 
-  const formatLastScan = (date?: Date) => {
+  const formatLastScan = (date?: Date | string) => {
     if (!date) return t('watchlist.neverScanned', 'Nunca escaneado')
     
+    const dateObj = typeof date === 'string' ? new Date(date) : date
     const now = new Date()
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+    const diffInHours = Math.floor((now.getTime() - dateObj.getTime()) / (1000 * 60 * 60))
     
     if (diffInHours < 1) return t('watchlist.justNow', 'Agora mesmo')
     if (diffInHours < 24) return t('watchlist.hoursAgo', '{hours}h atrás', { hours: diffInHours })
