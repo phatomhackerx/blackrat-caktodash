@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { BlackRatSidebar } from "@/components/BlackRatSidebar"
+import { StarfieldBackground } from "@/components/StarfieldBackground"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -32,13 +33,14 @@ const Scanners = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <StarfieldBackground />
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
           <BlackRatSidebar />
           
-          <div className="flex-1 flex flex-col">
-            <header className="h-16 border-b border-glass-border bg-glass-gradient backdrop-blur-glass flex items-center px-6">
+          <div className="flex-1 flex flex-col relative z-10">
+            <header className="h-16 border-b border-foreground/10 bg-background/80 backdrop-blur-xl flex items-center px-6">
               <SidebarTrigger className="mr-4" />
               <div className="flex items-center space-x-4">
                 <Search className="h-6 w-6 text-primary" />

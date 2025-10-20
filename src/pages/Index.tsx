@@ -7,6 +7,7 @@ import { TerminalCard } from "@/components/TerminalCard"
 import { NewsCard } from "@/components/NewsCard"
 import { WatchlistCard } from "@/components/WatchlistCard"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import { StarfieldBackground } from "@/components/StarfieldBackground"
 import { useTranslation } from "react-i18next"
 import { useBlackRatStore } from "@/store/blackrat-store"
 import { motion } from "framer-motion"
@@ -26,13 +27,14 @@ const Index = () => {
   }, [addLog, t])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <StarfieldBackground />
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
           <BlackRatSidebar />
           
-          <div className="flex-1 flex flex-col">
-            <header className="h-16 border-b border-border bg-background backdrop-blur-sm flex items-center justify-between px-6">
+          <div className="flex-1 flex flex-col relative z-10">
+            <header className="h-16 border-b border-foreground/10 bg-background/80 backdrop-blur-xl flex items-center justify-between px-6">
               <div className="flex items-center">
                 <SidebarTrigger className="mr-4" />
                 <div className="flex items-center space-x-4">
