@@ -12,10 +12,10 @@ const Payloads = () => {
   const [searchTerm, setSearchTerm] = useState("")
 
   const payloadTypes = [
-    { name: "Reverse Shell", count: 45, icon: Code, description: "Remote access payloads" },
-    { name: "Keylogger", count: 23, icon: Shield, description: "Keystroke capture tools" }, 
-    { name: "Ransomware", count: 12, icon: Skull, description: "File encryption payloads" },
-    { name: "Network Tools", count: 67, icon: Wifi, description: "Network infiltration tools" }
+    { name: "Reverse Shell", count: 145, icon: Code, description: "Payloads de acesso remoto" },
+    { name: "Keylogger", count: 67, icon: Shield, description: "Ferramentas de captura" }, 
+    { name: "Backdoor", count: 89, icon: Skull, description: "Backdoors persistentes" },
+    { name: "Ferramentas de Rede", count: 123, icon: Wifi, description: "Ferramentas de infiltração" }
   ]
 
   const featuredPayloads = [

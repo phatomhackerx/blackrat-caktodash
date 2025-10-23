@@ -68,8 +68,8 @@ export default {
 				'terminal-bg': 'var(--terminal-bg)'
 			},
 			fontFamily: {
-				'sans': ['Inter', 'system-ui', 'sans-serif'],
-				'mono': ['JetBrains Mono', 'Consolas', 'monospace']
+				'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
+				'mono': ['JetBrains Mono', 'SF Mono', 'Consolas', 'Monaco', 'monospace']
 			},
 			backgroundImage: {
 				'glass-gradient': 'linear-gradient(145deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%)',
