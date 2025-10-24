@@ -2,13 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Cpu, HardDrive, Wifi, Shield, Activity } from 'lucide-react'
-import { useBlackRatStore } from '@/store/blackrat-store'
+import { useCerberusStore } from '@/store/cerberus-store'
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 
 export function SystemStatusCard() {
   const { t } = useTranslation()
-  const { systemMetrics, updateSystemMetrics } = useBlackRatStore()
+  const { systemMetrics, updateSystemMetrics } = useCerberusStore()
 
   // Simulate real-time metrics updates
   useEffect(() => {

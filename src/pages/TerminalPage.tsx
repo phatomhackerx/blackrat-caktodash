@@ -2,17 +2,17 @@ import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { motion } from "framer-motion"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { BlackRatSidebar } from "@/components/BlackRatSidebar"
+import { CerberusSidebar } from "@/components/CerberusSidebar"
 import { StarfieldBackground } from "@/components/StarfieldBackground"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useBlackRatStore } from "@/store/blackrat-store"
+import { useCerberusStore } from "@/store/cerberus-store"
 import { Terminal, Send, Folder, Plus, X, Wifi, Database, Globe } from "lucide-react"
 
 const TerminalPage = () => {
   const { t } = useTranslation()
-  const { addLog, systemMetrics, updateSystemMetrics } = useBlackRatStore()
+  const { addLog, systemMetrics, updateSystemMetrics } = useCerberusStore()
   const [sessions, setSessions] = useState([
     { id: 1, name: "Terminal 1", active: true },
     { id: 2, name: "Remote SSH", active: false }
@@ -20,7 +20,7 @@ const TerminalPage = () => {
   const [activeSession, setActiveSession] = useState(1)
   const [command, setCommand] = useState("")
   const [output, setOutput] = useState([
-    "BlackRat OS Terminal v2.0 - Advanced Shell Environment",
+    "Cerberus Terminal v2.0 - Advanced Shell Environment",
     "Welcome to the command center. Type 'help' for available commands.",
     "Current directory: /opt/blackrat",
     ""
@@ -231,7 +231,7 @@ const TerminalPage = () => {
       <StarfieldBackground />
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
-          <BlackRatSidebar />
+          <CerberusSidebar />
           
           <div className="flex-1 flex flex-col relative z-10">
             <header className="h-16 border-b border-foreground/10 bg-background/80 backdrop-blur-xl flex items-center px-6">

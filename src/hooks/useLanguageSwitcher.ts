@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { useBlackRatStore } from '@/store/blackrat-store';
+import { useCerberusStore } from '@/store/cerberus-store';
 
 export const useLanguageSwitcher = () => {
   const { i18n } = useTranslation();
-  const { config, updateConfig } = useBlackRatStore();
+  const { config, updateConfig } = useCerberusStore();
 
   const switchLanguage = (language: 'pt-BR' | 'en-US') => {
     i18n.changeLanguage(language);

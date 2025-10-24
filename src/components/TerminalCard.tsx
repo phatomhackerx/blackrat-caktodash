@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Terminal, Maximize2, Minimize2 } from 'lucide-react'
-import { useBlackRatStore } from '@/store/blackrat-store'
+import { useCerberusStore } from '@/store/cerberus-store'
 import { useTranslation } from 'react-i18next'
 
 interface TerminalOutput {
@@ -18,7 +18,7 @@ interface TerminalOutput {
 
 export function TerminalCard() {
   const { t } = useTranslation()
-  const { addLog, targets } = useBlackRatStore()
+  const { addLog, targets } = useCerberusStore()
   const [isExpanded, setIsExpanded] = useState(false)
   const [currentCommand, setCurrentCommand] = useState('')
   const [terminalHistory, setTerminalHistory] = useState<TerminalOutput[]>([
@@ -26,7 +26,7 @@ export function TerminalCard() {
       id: '1',
       timestamp: new Date(),
       command: '',
-      output: ['BlackRat OS Terminal v2.0', 'Digite "help" para ver comandos disponíveis'],
+      output: ['Cerberus Terminal v2.0', 'Digite "help" para ver comandos disponíveis'],
       type: 'output'
     }
   ])
@@ -160,11 +160,11 @@ export function TerminalCard() {
 
       case 'whoami':
         response = [
-          'blackrat@kali:~$ ',
-          'Usuário: blackrat',
-          'Grupos: sudo, blackrat, penetration-testers',
+          'cerberus@kali:~$ ',
+          'Usuário: cerberus',
+          'Grupos: sudo, cerberus, penetration-testers',
           'Shell: /bin/bash',
-          'Diretório: /home/blackrat',
+          'Diretório: /home/cerberus',
           'Permissões: rwxrwxrwx'
         ]
         responseType = 'success'
@@ -317,7 +317,7 @@ export function TerminalCard() {
                 <div key={entry.id}>
                   {entry.command && (
                     <div className="flex items-center gap-2">
-                      <span className="text-foreground/60">blackrat@kali:~$</span>
+                      <span className="text-foreground/60">cerberus@kali:~$</span>
                       <span className="text-foreground font-normal">{entry.command}</span>
                     </div>
                   )}
@@ -339,7 +339,7 @@ export function TerminalCard() {
           </ScrollArea>
           
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border font-mono text-xs">
-            <span className="text-foreground/60">blackrat@kali:~$</span>
+            <span className="text-foreground/60">cerberus@kali:~$</span>
             <Input
               value={currentCommand}
               onChange={(e) => setCurrentCommand(e.target.value)}

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Target, Plus, MoreVertical, Clock, Shield } from 'lucide-react'
-import { useBlackRatStore } from '@/store/blackrat-store'
+import { useCerberusStore } from '@/store/cerberus-store'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -15,7 +15,7 @@ import {
 export function WatchlistCard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { targets, setCurrentTarget, removeTarget, addLog } = useBlackRatStore()
+  const { targets, setCurrentTarget, removeTarget, addLog } = useCerberusStore()
 
   const getStatusColor = (status: string) => {
     const colors = {

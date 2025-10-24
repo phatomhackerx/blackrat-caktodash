@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { BlackRatSidebar } from "@/components/BlackRatSidebar"
+import { CerberusSidebar } from "@/components/CerberusSidebar"
 import { StarfieldBackground } from "@/components/StarfieldBackground"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -78,7 +78,7 @@ const Payloads = () => {
       <StarfieldBackground />
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
-          <BlackRatSidebar />
+          <CerberusSidebar />
           
           <div className="flex-1 flex flex-col relative z-10">
             <header className="h-16 border-b border-foreground/10 bg-background/80 backdrop-blur-xl flex items-center px-6">

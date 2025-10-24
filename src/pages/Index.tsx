@@ -1,6 +1,6 @@
 import React from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { BlackRatSidebar } from "@/components/BlackRatSidebar"
+import { CerberusSidebar } from "@/components/CerberusSidebar"
 import { SystemStatusCard } from "@/components/SystemStatusCard"
 import { QuickAccessCard } from "@/components/QuickAccessCard"
 import { TerminalCard } from "@/components/TerminalCard"
@@ -9,13 +9,13 @@ import { WatchlistCard } from "@/components/WatchlistCard"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
 import { StarfieldBackground } from "@/components/StarfieldBackground"
 import { useTranslation } from "react-i18next"
-import { useBlackRatStore } from "@/store/blackrat-store"
+import { useCerberusStore } from "@/store/cerberus-store"
 import { motion } from "framer-motion"
 import { Shield } from "lucide-react"
 
 const Index = () => {
   const { t } = useTranslation()
-  const { addLog, config } = useBlackRatStore()
+  const { addLog, config } = useCerberusStore()
 
   // Add welcome log on mount
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const Index = () => {
       <StarfieldBackground />
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
-          <BlackRatSidebar />
+          <CerberusSidebar />
           
           <div className="flex-1 flex flex-col relative z-10">
             <header className="h-16 border-b border-foreground/10 bg-background/80 backdrop-blur-xl flex items-center justify-between px-6">

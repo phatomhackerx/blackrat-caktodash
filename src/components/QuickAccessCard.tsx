@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Search, Zap, Terminal, Target, Activity, Eye } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { useBlackRatStore } from '@/store/blackrat-store'
+import { useCerberusStore } from '@/store/cerberus-store'
 
 interface QuickAction {
   id: string
@@ -19,7 +19,7 @@ interface QuickAction {
 export function QuickAccessCard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { targets, systemMetrics } = useBlackRatStore()
+  const { targets, systemMetrics } = useCerberusStore()
 
   const quickActions: QuickAction[] = [
     {

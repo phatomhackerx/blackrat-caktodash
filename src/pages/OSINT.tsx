@@ -2,19 +2,19 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { motion } from "framer-motion"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { BlackRatSidebar } from "@/components/BlackRatSidebar"
+import { CerberusSidebar } from "@/components/CerberusSidebar"
 import { StarfieldBackground } from "@/components/StarfieldBackground"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useBlackRatStore } from "@/store/blackrat-store"
+import { useCerberusStore } from "@/store/cerberus-store"
 import { Search, Globe, Mail, Users, Eye, Download, ExternalLink, Clock } from "lucide-react"
 
 const OSINT = () => {
   const { t } = useTranslation()
-  const { addLog } = useBlackRatStore()
+  const { addLog } = useCerberusStore()
   const [target, setTarget] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [results, setResults] = useState<any>({})
@@ -206,7 +206,7 @@ const OSINT = () => {
       <StarfieldBackground />
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
-          <BlackRatSidebar />
+          <CerberusSidebar />
           
           <div className="flex-1 flex flex-col relative z-10">
             <header className="h-16 border-b border-foreground/10 bg-background/80 backdrop-blur-xl flex items-center px-6">

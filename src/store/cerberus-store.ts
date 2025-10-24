@@ -36,7 +36,7 @@ export interface SystemMetrics {
   lastUpdate: Date;
 }
 
-export interface BlackRatConfig {
+export interface CerberusConfig {
   language: 'pt-BR' | 'en-US';
   theme: 'dark' | 'light';
   demoMode: boolean;
@@ -56,10 +56,10 @@ export interface BlackRatConfig {
   };
 }
 
-interface BlackRatState {
+interface CerberusState {
   // Configuration
-  config: BlackRatConfig;
-  updateConfig: (config: Partial<BlackRatConfig>) => void;
+  config: CerberusConfig;
+  updateConfig: (config: Partial<CerberusConfig>) => void;
   
   // Session
   sessionId: string;
@@ -94,7 +94,7 @@ interface BlackRatState {
   resetSession: () => void;
 }
 
-const defaultConfig: BlackRatConfig = {
+const defaultConfig: CerberusConfig = {
   language: 'pt-BR',
   theme: 'dark',
   demoMode: true,
@@ -128,7 +128,7 @@ const defaultSystemMetrics: SystemMetrics = {
   lastUpdate: new Date()
 };
 
-export const useBlackRatStore = create<BlackRatState>()(
+export const useCerberusStore = create<CerberusState>()(
   persist(
     (set, get) => ({
       // Configuration
@@ -147,10 +147,10 @@ export const useBlackRatStore = create<BlackRatState>()(
       targets: [
         {
           id: '1',
-          name: 'Web Server Production',
+          name: 'Servidor Web Produção',
           ip: '192.168.1.50',
           description: 'Servidor web principal da empresa',
-          tags: ['web', 'production', 'critical'],
+          tags: ['web', 'producao', 'critico'],
           priority: 'critical',
           status: 'scanning',
           lastScan: new Date(),
@@ -158,7 +158,7 @@ export const useBlackRatStore = create<BlackRatState>()(
         },
         {
           id: '2',
-          name: 'Database Server',
+          name: 'Servidor Banco de Dados',
           ip: '10.0.0.100',
           description: 'Servidor de banco de dados MySQL',
           tags: ['database', 'mysql'],
@@ -189,8 +189,8 @@ export const useBlackRatStore = create<BlackRatState>()(
           id: '1',
           timestamp: new Date(),
           level: 'info',
-          source: 'System',
-          message: 'BlackRat OS iniciado com sucesso'
+          source: 'Sistema',
+          message: 'Cerberus iniciado com sucesso'
         },
         {
           id: '2',
@@ -230,7 +230,7 @@ export const useBlackRatStore = create<BlackRatState>()(
       // Terminal Sessions
       terminalSessions: [
         { id: 1, name: 'Terminal 1', active: true, output: [] },
-        { id: 2, name: 'Remote SSH', active: false, output: [] }
+        { id: 2, name: 'SSH Remoto', active: false, output: [] }
       ],
       updateTerminalSessions: (sessions) => set({ terminalSessions: sessions }),
       
@@ -246,7 +246,7 @@ export const useBlackRatStore = create<BlackRatState>()(
         })
     }),
     {
-      name: 'blackrat-storage',
+      name: 'cerberus-storage',
       partialize: (state) => ({
         config: state.config,
         targets: state.targets,

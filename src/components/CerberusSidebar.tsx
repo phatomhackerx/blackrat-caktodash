@@ -14,8 +14,8 @@ import {
   Eye
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useBlackRatStore } from "@/store/blackrat-store"
-import blackratLogo from "@/assets/blackrat-logo.png"
+import { useCerberusStore } from "@/store/cerberus-store"
+import cerberusLogo from "@/assets/cerberus-logo.jpg"
 import { NavLink, useLocation } from "react-router-dom"
 
 import {
@@ -31,9 +31,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function BlackRatSidebar() {
+export function CerberusSidebar() {
   const { t } = useTranslation()
-  const { systemMetrics } = useBlackRatStore()
+  const { systemMetrics } = useCerberusStore()
   const { state } = useSidebar()
   const location = useLocation()
   const currentPath = location.pathname
@@ -72,32 +72,32 @@ export function BlackRatSidebar() {
       collapsible="icon"
     >
       <SidebarContent className="p-4">
-        {/* BlackRat OS Logo */}
+        {/* Cerberus Logo */}
         <div className="mb-8 text-center">
           {!collapsed ? (
             <div className="space-y-2">
               <img 
-                src={blackratLogo} 
-                alt="BlackRat OS" 
-                className="h-12 w-12 mx-auto filter invert"
+                src={cerberusLogo} 
+                alt="Cerberus" 
+                className="h-12 w-12 mx-auto rounded-lg"
               />
               <div>
-                <h1 className="text-xl font-bold text-primary">BlackRat</h1>
-                <p className="text-xs text-muted-foreground font-mono">OS v2.0</p>
+                <h1 className="text-xl font-bold text-primary">Cerberus</h1>
+                <p className="text-xs text-muted-foreground font-mono">v2.0</p>
               </div>
             </div>
           ) : (
             <img 
-              src={blackratLogo} 
-              alt="BlackRat OS" 
-              className="h-8 w-8 mx-auto filter invert"
+              src={cerberusLogo} 
+              alt="Cerberus" 
+              className="h-8 w-8 mx-auto rounded-lg"
             />
           )}
         </div>
 
         <SidebarGroup>
           <SidebarGroupLabel className={`${collapsed ? 'hidden' : 'block'} text-muted-foreground font-semibold text-xs tracking-wider uppercase mb-4`}>
-            {t("sidebar.title", "Red Team Tools")}
+            {t("sidebar.title", "Ferramentas Red Team")}
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
