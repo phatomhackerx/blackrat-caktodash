@@ -5,19 +5,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-200 ease-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-foreground text-background rounded-full hover:bg-foreground/90 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] font-medium",
+          "bg-foreground text-background rounded-full hover:bg-foreground/90 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:scale-[1.02] font-medium",
         destructive:
-          "bg-foreground/10 text-foreground border border-foreground/20 rounded-full hover:bg-foreground/20 hover:border-foreground/30",
+          "bg-foreground/10 text-foreground border border-foreground/20 rounded-full hover:bg-foreground/20 hover:border-foreground/30 hover:scale-[1.02]",
         outline:
-          "border border-foreground/20 bg-transparent rounded-full hover:bg-foreground/5 hover:border-foreground/30 backdrop-blur-sm",
+          "border border-foreground/20 bg-transparent rounded-full hover:bg-foreground/5 hover:border-foreground/30 backdrop-blur-sm hover:scale-[1.02]",
         secondary:
-          "bg-foreground/5 text-foreground rounded-full hover:bg-foreground/10 border border-foreground/10",
-        ghost: "rounded-full hover:bg-foreground/5 hover:text-foreground",
+          "bg-foreground/5 text-foreground rounded-full hover:bg-foreground/10 border border-foreground/10 hover:scale-[1.02]",
+        ghost: "rounded-full hover:bg-foreground/5 hover:text-foreground hover:scale-[1.02]",
         link: "text-foreground underline-offset-4 hover:underline rounded-full",
       },
       size: {

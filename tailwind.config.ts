@@ -71,6 +71,14 @@ export default {
 				'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
 				'mono': ['JetBrains Mono', 'SF Mono', 'Consolas', 'Monaco', 'monospace']
 			},
+			transitionDuration: {
+				'150': '150ms',
+				'250': '250ms',
+			},
+			transitionTimingFunction: {
+				'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+				'gentle': 'cubic-bezier(0.4, 0, 0.6, 1)',
+			},
 			backgroundImage: {
 				'glass-gradient': 'linear-gradient(145deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%)',
 				'terminal-gradient': 'linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.98) 100%)'
@@ -80,12 +88,13 @@ export default {
 			},
 			animation: {
 				'slide-in': 'slideIn 0.2s ease-out',
-				'slide-up': 'slide-up 0.3s ease-out',
-				'slide-down': 'slide-down 0.3s ease-out',
+				'slide-up': 'slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+				'slide-down': 'slide-down 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 				'fade-in': 'fadeIn 0.2s ease-out',
-				'scale-in': 'scale-in 0.2s ease-out',
+				'scale-in': 'scale-in 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
 				'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
-				'glow': 'glow 3s ease-in-out infinite alternate',
+				'shimmer': 'shimmer 2s linear infinite',
+				'glow': 'glow 2s ease-in-out infinite',
 				'float-stars': 'float-stars 4s ease-in-out infinite'
 			},
 			borderRadius: {
@@ -127,16 +136,20 @@ export default {
 					'100%': { boxShadow: '0 0 8px rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.2)' }
 				},
 				'slide-up': {
-					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'0%': { opacity: '0', transform: 'translateY(12px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'slide-down': {
-					'0%': { opacity: '0', transform: 'translateY(-20px)' },
+					'0%': { opacity: '0', transform: 'translateY(-12px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'scale-in': {
-					'0%': { opacity: '0', transform: 'scale(0.95)' },
+					'0%': { opacity: '0', transform: 'scale(0.96)' },
 					'100%': { opacity: '1', transform: 'scale(1)' }
+				},
+				shimmer: {
+					'0%': { backgroundPosition: '-1000px 0' },
+					'100%': { backgroundPosition: '1000px 0' }
 				},
 				'float-stars': {
 					'0%, 100%': { transform: 'translateY(0)' },

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { useCerberusStore } from "@/store/cerberus-store"
-import { Mail, Users, Target, Eye, Globe, Send, Play, Download } from "lucide-react"
+import { Mail, Users, Target, Eye, Globe, Send, Play, Download, Activity } from "lucide-react"
 
 const Phishing = () => {
   const { t } = useTranslation()
@@ -90,9 +90,9 @@ const Phishing = () => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
       className="min-h-screen bg-background relative"
     >
       <StarfieldBackground />
@@ -137,14 +137,23 @@ const Phishing = () => {
               </Card>
 
               {/* Templates */}
-              <Card className="bg-glass-gradient backdrop-blur-glass border border-glass-border">
+              <Card className="glass-effect hover-lift">
                 <CardHeader>
-                  <CardTitle className="text-primary">Email Templates</CardTitle>
+                  <CardTitle className="text-primary flex items-center space-x-2">
+                    <Mail className="h-5 w-5" />
+                    <span>Email Templates</span>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {templates.map((template) => (
-                      <div key={template.name} className="p-4 bg-glass-gradient border border-glass-border rounded-lg hover:border-primary/30 transition-all duration-300">
+                    {templates.map((template, index) => (
+                      <motion.div 
+                        key={template.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05, duration: 0.3, ease: "easeOut" }}
+                        className="p-4 glass-effect rounded-lg hover:border-primary/30 transition-all duration-200 hover:-translate-y-1 cursor-pointer"
+                      >
                         <div className="flex items-start justify-between mb-3">
                           <h3 className="font-semibold text-foreground">{template.name}</h3>
                           <Badge className="bg-blue-900/50 text-blue-400 border-blue-800">
@@ -166,31 +175,45 @@ const Phishing = () => {
                         </div>
                         
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="flex-1 border-glass-border hover:border-primary/30">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 transition-all duration-200"
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
                             Preview
                           </Button>
-                          <Button size="sm" className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
-                            Use Template
+                          <Button 
+                            size="sm" 
+                            className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                          >
+                            Usar Template
                           </Button>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
 
               {/* Active Campaigns */}
-              <Card className="bg-glass-gradient backdrop-blur-glass border border-glass-border">
+              <Card className="glass-effect hover-lift">
                 <CardHeader>
                   <CardTitle className="text-primary flex items-center space-x-2">
                     <Target className="h-5 w-5" />
-                    <span>Active Campaigns</span>
+                    <span>Campanhas Ativas</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {activeCampaigns.map((campaign, index) => (
-                      <div key={index} className="p-4 bg-glass-gradient border border-glass-border rounded-lg">
+                      <motion.div 
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.3, ease: "easeOut" }}
+                        className="p-4 glass-effect rounded-lg hover:border-primary/20 transition-all duration-200"
+                      >
                         <div className="flex items-start justify-between mb-4">
                           <div>
                             <h3 className="font-semibold text-foreground mb-1">{campaign.name}</h3>
@@ -221,30 +244,47 @@ const Phishing = () => {
                         </div>
                         
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="transition-all duration-200"
+                          >
                             <Eye className="h-3 w-3 mr-1" />
-                            View Results
+                            Ver Resultados
                           </Button>
-                          <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="transition-all duration-200"
+                          >
                             <Users className="h-3 w-3 mr-1" />
-                            Manage Targets
+                            Gerenciar Alvos
                           </Button>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
 
               {/* Recent Activity */}
-              <Card className="bg-glass-gradient backdrop-blur-glass border border-glass-border">
+              <Card className="glass-effect hover-lift">
                 <CardHeader>
-                  <CardTitle className="text-primary">Recent Activity</CardTitle>
+                  <CardTitle className="text-primary flex items-center space-x-2">
+                    <Activity className="h-5 w-5" />
+                    <span>Atividade Recente</span>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {recentLogs.map((log, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-glass-gradient border border-glass-border rounded-lg">
+                      <motion.div 
+                        key={index}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05, duration: 0.2, ease: "easeOut" }}
+                        className="flex items-center justify-between p-3 glass-effect rounded-lg hover:bg-foreground/5 transition-all duration-150 cursor-pointer"
+                      >
                         <div className="flex items-center space-x-4">
                           <div className="w-2 h-2 bg-primary rounded-full animate-pulse-subtle"></div>
                           <div>
@@ -253,7 +293,7 @@ const Phishing = () => {
                           </div>
                         </div>
                         <span className="text-sm text-muted-foreground">{log.time}</span>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>
