@@ -16,16 +16,16 @@
   "sidebar": {
     "title": "Ferramentas Red Team",
     "dashboard": "Dashboard",
-    "scanners": "Scanners",
+    "scanners": "Scanners de Rede",
     "exploits": "Exploits",
-    "phishing": "Phishing",
-    "payloads": "Payloads",
-    "terminal": "Terminal",
+    "phishing": "Campanhas Phishing",
+    "payloads": "Arsenal de Payloads",
+    "terminal": "Terminal Avançado",
     "monitoring": "Monitoramento",
     "watchlist": "Lista de Alvos",
-    "network": "Rede",
-    "logs": "Logs",
-    "osint": "OSINT",
+    "network": "Análise de Rede",
+    "logs": "Logs do Sistema",
+    "osint": "Inteligência OSINT",
     "settings": "Configurações"
   },
   "dashboard": {

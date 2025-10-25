@@ -6,10 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { useCerberusStore } from "@/store/cerberus-store"
 import { Package, Download, Code, Shield, Skull, Wifi } from "lucide-react"
 
 const Payloads = () => {
+  const { addLog } = useCerberusStore()
   const [searchTerm, setSearchTerm] = useState("")
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const payloadTypes = [
     { name: "Reverse Shell", count: 145, icon: Code, description: "Payloads de acesso remoto" },
@@ -63,6 +66,40 @@ const Payloads = () => {
     { action: "Callback received", name: "Python Reverse Shell", user: "operator", time: "1h ago" }
   ]
 
+  const downloadPayload = (payload: any) => {
+    addLog({
+      level: 'info',
+      source: 'Payloads',
+      message: `Baixando payload: ${payload.name}`
+    })
+    
+    setTimeout(() => {
+      addLog({
+        level: 'success',
+        source: 'Payloads',
+        message: `Payload ${payload.name} baixado com sucesso`
+      })
+    }, 1000)
+  }
+
+  const generateCustomPayload = () => {
+    setIsGenerating(true)
+    addLog({
+      level: 'info',
+      source: 'Payloads',
+      message: 'Iniciando gerador de payload personalizado'
+    })
+    
+    setTimeout(() => {
+      setIsGenerating(false)
+      addLog({
+        level: 'success',
+        source: 'Payloads',
+        message: 'Payload personalizado gerado com sucesso'
+      })
+    }, 3000)
+  }
+
   const getLanguageColor = (language: string) => {
     switch (language) {
       case 'Python': return 'bg-blue-900/50 text-blue-400 border-blue-800'
@@ -101,10 +138,15 @@ const Payloads = () => {
                       className="bg-terminal-bg border-glass-border text-primary"
                     />
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                      Search
+                      Buscar
                     </Button>
-                    <Button variant="outline" className="border-glass-border hover:border-primary/30">
-                      Generate Custom
+                    <Button 
+                      variant="outline" 
+                      className="border-glass-border hover:border-primary/30"
+                      onClick={generateCustomPayload}
+                      disabled={isGenerating}
+                    >
+                      {isGenerating ? 'Gerando...' : 'Gerar Personalizado'}
                     </Button>
                   </div>
                 </CardContent>
@@ -147,9 +189,14 @@ const Payloads = () => {
                               {payload.language}
                             </Badge>
                           </div>
-                          <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="border-glass-border hover:border-primary/30"
+                            onClick={() => downloadPayload(payload)}
+                          >
                             <Download className="h-3 w-3 mr-1" />
-                            Download
+                            Baixar
                           </Button>
                         </div>
                         
@@ -175,11 +222,28 @@ const Payloads = () => {
                         </div>
                         
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="flex-1 border-glass-border hover:border-primary/30">
-                            Preview Code
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 border-glass-border hover:border-primary/30"
+                            onClick={() => addLog({
+                              level: 'info',
+                              source: 'Payloads',
+                              message: `Visualizando código do payload: ${payload.name}`
+                            })}
+                          >
+                            Ver Código
                           </Button>
-                          <Button size="sm" className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
-                            Configure
+                          <Button 
+                            size="sm" 
+                            className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                            onClick={() => addLog({
+                              level: 'info',
+                              source: 'Payloads',
+                              message: `Configurando payload: ${payload.name}`
+                            })}
+                          >
+                            Configurar
                           </Button>
                         </div>
                       </div>
