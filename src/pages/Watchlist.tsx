@@ -183,7 +183,40 @@ const Watchlist = () => {
                     >
                       {t('watchlist.addTarget')}
                     </Button>
-                    <Button variant="outline" className="border-glass-border hover:border-primary/30">
+                    <Button 
+                      variant="outline" 
+                      className="border-glass-border hover:border-primary/30"
+                      onClick={() => {
+                        const input = document.createElement('input')
+                        input.type = 'file'
+                        input.accept = '.txt,.csv'
+                        input.onchange = (e: any) => {
+                          const file = e.target.files[0]
+                          const reader = new FileReader()
+                          reader.onload = (event) => {
+                            const text = event.target?.result as string
+                            const lines = text.split('\n').filter(l => l.trim())
+                            lines.forEach(line => {
+                              addTarget({
+                                name: `Imported ${line}`,
+                                ip: line.trim(),
+                                description: 'Imported from file',
+                                tags: ['imported'],
+                                priority: 'medium',
+                                status: 'unknown'
+                              })
+                            })
+                            addLog({ 
+                              level: 'success', 
+                              source: 'Watchlist', 
+                              message: `Imported ${lines.length} targets from file` 
+                            })
+                          }
+                          reader.readAsText(file)
+                        }
+                        input.click()
+                      }}
+                    >
                       <Upload className="h-4 w-4 mr-2" />
                       Import List
                     </Button>
@@ -259,7 +292,18 @@ const Watchlist = () => {
                               <Activity className="h-3 w-3 mr-1" />
                               Scan
                             </Button>
-                            <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="border-glass-border hover:border-primary/30"
+                              onClick={() => {
+                                addLog({
+                                  level: 'info',
+                                  source: 'Watchlist',
+                                  message: `Viewing detailed information for ${target.name}`
+                                })
+                              }}
+                            >
                               <Eye className="h-3 w-3 mr-1" />
                               Details
                             </Button>

@@ -193,11 +193,34 @@ const Monitoring = () => {
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-muted-foreground">Source: {alert.source}</span>
                           <div className="flex space-x-2">
-                            <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="border-glass-border hover:border-primary/30"
+                              onClick={() => {
+                                addLog({ 
+                                  level: 'info', 
+                                  source: 'Monitoring', 
+                                  message: `Viewing details for: ${alert.message}` 
+                                })
+                              }}
+                            >
                               <Eye className="h-3 w-3 mr-1" />
                               Details
                             </Button>
-                            <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="border-glass-border hover:border-primary/30"
+                              onClick={() => {
+                                setActiveAlerts(prev => Math.max(0, prev - 1))
+                                addLog({ 
+                                  level: 'info', 
+                                  source: 'Monitoring', 
+                                  message: `Alert dismissed: ${alert.type}` 
+                                })
+                              }}
+                            >
                               Dismiss
                             </Button>
                           </div>
@@ -237,7 +260,18 @@ const Monitoring = () => {
                   </div>
                   
                   <div className="flex justify-center mt-4">
-                    <Button variant="outline" className="border-glass-border hover:border-primary/30">
+                    <Button 
+                      variant="outline" 
+                      className="border-glass-border hover:border-primary/30"
+                      onClick={() => {
+                        addLog({ 
+                          level: 'info', 
+                          source: 'Monitoring', 
+                          message: 'Opening full network topology map' 
+                        })
+                        window.location.href = '/network'
+                      }}
+                    >
                       View Full Network Map
                     </Button>
                   </div>
@@ -251,15 +285,48 @@ const Monitoring = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Button className="h-20 flex flex-col space-y-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Button 
+                      className="h-20 flex flex-col space-y-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                      onClick={() => {
+                        addLog({ level: 'info', source: 'Monitoring', message: 'Full system scan initiated' })
+                        setTimeout(() => {
+                          addLog({ level: 'success', source: 'Monitoring', message: 'Full scan completed - No threats detected' })
+                        }, 3000)
+                      }}
+                    >
                       <Activity className="h-6 w-6" />
                       <span>Start Full Scan</span>
                     </Button>
-                    <Button variant="outline" className="h-20 flex flex-col space-y-2 border-glass-border hover:border-primary/30">
+                    <Button 
+                      variant="outline" 
+                      className="h-20 flex flex-col space-y-2 border-glass-border hover:border-primary/30"
+                      onClick={() => {
+                        setActiveAlerts(0)
+                        addLog({ level: 'info', source: 'Monitoring', message: 'All alerts reviewed and cleared' })
+                      }}
+                    >
                       <AlertTriangle className="h-6 w-6" />
                       <span>Review Alerts</span>
                     </Button>
-                    <Button variant="outline" className="h-20 flex flex-col space-y-2 border-glass-border hover:border-primary/30">
+                    <Button 
+                      variant="outline" 
+                      className="h-20 flex flex-col space-y-2 border-glass-border hover:border-primary/30"
+                      onClick={() => {
+                        const report = {
+                          timestamp: new Date().toISOString(),
+                          metrics: systemMetrics,
+                          alerts: activeAlerts
+                        }
+                        const dataStr = JSON.stringify(report, null, 2)
+                        const dataBlob = new Blob([dataStr], { type: 'application/json' })
+                        const url = URL.createObjectURL(dataBlob)
+                        const link = document.createElement('a')
+                        link.href = url
+                        link.download = `monitoring_report_${Date.now()}.json`
+                        link.click()
+                        addLog({ level: 'success', source: 'Monitoring', message: 'Report exported successfully' })
+                      }}
+                    >
                       <Eye className="h-6 w-6" />
                       <span>Export Report</span>
                     </Button>

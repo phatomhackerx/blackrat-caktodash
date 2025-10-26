@@ -306,7 +306,48 @@ const Scanners = () => {
                             <span className="font-medium text-foreground">{scan.stealth}</span>
                           </div>
                         </div>
-                        <Button variant="outline" size="sm" className="w-full">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full"
+                          onClick={() => {
+                            if (!scanTarget.trim()) {
+                              addLog({
+                                level: 'warning',
+                                source: 'Scanners',
+                                message: 'Por favor, defina um alvo antes de executar o scanner'
+                              })
+                              return
+                            }
+                            setIsScanning(true)
+                            addLog({
+                              level: 'info',
+                              source: 'Scanners',
+                              message: `Executando ${scan.name} em ${scanTarget}`
+                            })
+                            setTimeout(() => {
+                              const mockResults = {
+                                target: scanTarget,
+                                openPorts: [
+                                  { port: 22, service: "SSH", version: "OpenSSH 8.2" },
+                                  { port: 80, service: "HTTP", version: "Apache 2.4.41" },
+                                  { port: 443, service: "HTTPS", version: "nginx 1.18.0" },
+                                  { port: 3306, service: "MySQL", version: "8.0.23" }
+                                ],
+                                os: "Linux 5.4.0-42-generic",
+                                vulnerabilities: Math.floor(Math.random() * 5)
+                              }
+                              setScanResults(mockResults)
+                              setIsScanning(false)
+                              addLog({
+                                level: 'success',
+                                source: 'Scanners',
+                                message: `${scan.name} concluído: ${mockResults.openPorts.length} portas encontradas`
+                              })
+                            }, 3000)
+                          }}
+                          disabled={isScanning}
+                        >
                           <Settings className="h-3 w-3 mr-2" />
                           Configurar & Executar
                         </Button>
@@ -365,7 +406,24 @@ const Scanners = () => {
                     ))}
                   </div>
                   <div className="mt-4 flex justify-center">
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        const dataStr = JSON.stringify(recentScans, null, 2)
+                        const dataBlob = new Blob([dataStr], { type: 'application/json' })
+                        const url = URL.createObjectURL(dataBlob)
+                        const link = document.createElement('a')
+                        link.href = url
+                        link.download = `scan_history_${Date.now()}.json`
+                        link.click()
+                        addLog({
+                          level: 'success',
+                          source: 'Scanners',
+                          message: 'Histórico de varreduras exportado com sucesso'
+                        })
+                      }}
+                    >
                       <Download className="h-4 w-4 mr-2" />
                       Exportar Histórico
                     </Button>

@@ -232,7 +232,25 @@ const Network = () => {
                           </div>
                           
                           <div className="flex space-x-2">
-                            <Button variant="outline" size="sm" className="border-glass-border hover:border-primary/30">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="border-glass-border hover:border-primary/30"
+                              onClick={() => {
+                                addLog({
+                                  level: 'info',
+                                  source: 'Network',
+                                  message: `Port scan initiated for ${node.name} (${node.ip})`
+                                })
+                                setTimeout(() => {
+                                  addLog({
+                                    level: 'success',
+                                    source: 'Network',
+                                    message: `Port scan completed for ${node.ip} - Found ${node.services.length} open ports`
+                                  })
+                                }, 2000)
+                              }}
+                            >
                               <Shield className="h-3 w-3 mr-1" />
                               Scan Ports
                             </Button>
@@ -292,7 +310,30 @@ const Network = () => {
                       <Play className="h-4 w-4 mr-2" />
                       Start Network Scan
                     </Button>
-                    <Button variant="outline" className="border-glass-border hover:border-primary/30">
+                    <Button 
+                      variant="outline" 
+                      className="border-glass-border hover:border-primary/30"
+                      onClick={() => {
+                        const networkData = {
+                          timestamp: new Date().toISOString(),
+                          nodes: networkNodes,
+                          segments: networkSegments,
+                          traffic: trafficStats
+                        }
+                        const dataStr = JSON.stringify(networkData, null, 2)
+                        const dataBlob = new Blob([dataStr], { type: 'application/json' })
+                        const url = URL.createObjectURL(dataBlob)
+                        const link = document.createElement('a')
+                        link.href = url
+                        link.download = `network_map_${Date.now()}.json`
+                        link.click()
+                        addLog({ 
+                          level: 'success', 
+                          source: 'Network', 
+                          message: 'Network map exported successfully' 
+                        })
+                      }}
+                    >
                       Export Network Map
                     </Button>
                   </div>
