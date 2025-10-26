@@ -179,6 +179,21 @@ const Phishing = () => {
                             variant="outline" 
                             size="sm" 
                             className="flex-1 transition-all duration-200"
+                            onClick={() => {
+                              addLog({
+                                level: 'info',
+                                source: 'Phishing',
+                                message: `Visualizando preview do template: ${template.name}`
+                              })
+                              // Simulando abertura de preview
+                              setTimeout(() => {
+                                addLog({
+                                  level: 'success',
+                                  source: 'Phishing',
+                                  message: `Preview carregado: ${template.name}`
+                                })
+                              }, 500)
+                            }}
                           >
                             <Eye className="h-3 w-3 mr-1" />
                             Preview
@@ -186,6 +201,14 @@ const Phishing = () => {
                           <Button 
                             size="sm" 
                             className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                            onClick={() => {
+                              addLog({
+                                level: 'success',
+                                source: 'Phishing',
+                                message: `Template "${template.name}" selecionado para nova campanha`
+                              })
+                              setCampaignName(`Campanha ${template.name}`)
+                            }}
                           >
                             Usar Template
                           </Button>
@@ -248,6 +271,18 @@ const Phishing = () => {
                             variant="outline" 
                             size="sm" 
                             className="transition-all duration-200"
+                            onClick={() => {
+                              addLog({
+                                level: 'info',
+                                source: 'Phishing',
+                                message: `Abrindo resultados detalhados da campanha: ${campaign.name}`
+                              })
+                              addLog({
+                                level: 'info',
+                                source: 'Phishing',
+                                message: `Taxa de sucesso: ${((campaign.submitted / campaign.targets) * 100).toFixed(1)}% | Engajamento: ${((campaign.clicked / campaign.opened) * 100).toFixed(1)}%`
+                              })
+                            }}
                           >
                             <Eye className="h-3 w-3 mr-1" />
                             Ver Resultados
@@ -256,6 +291,13 @@ const Phishing = () => {
                             variant="outline" 
                             size="sm" 
                             className="transition-all duration-200"
+                            onClick={() => {
+                              addLog({
+                                level: 'info',
+                                source: 'Phishing',
+                                message: `Gerenciando lista de alvos da campanha: ${campaign.name} (${campaign.targets} alvos)`
+                              })
+                            }}
                           >
                             <Users className="h-3 w-3 mr-1" />
                             Gerenciar Alvos

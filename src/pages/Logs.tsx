@@ -243,9 +243,9 @@ const Logs = () => {
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        {filteredLogs.map((log) => (
+                        {filteredLogs.map((log, logIndex) => (
                           <motion.div
-                            key={log.id}
+                            key={`${log.id}-${logIndex}`}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             className="p-3 bg-black/20 rounded-lg border border-white/10 hover:bg-black/30 transition-colors"
