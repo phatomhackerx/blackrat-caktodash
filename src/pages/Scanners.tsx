@@ -19,12 +19,15 @@ import {
   Download,
   CheckCircle,
   AlertCircle,
-  Loader2
+  Loader2,
+  ExternalLink
 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const Scanners = () => {
   const { t } = useTranslation()
   const { addLog } = useCerberusStore()
+  const navigate = useNavigate()
   const [scanTarget, setScanTarget] = useState("")
   const [isScanning, setIsScanning] = useState(false)
   const [scanResults, setScanResults] = useState<any>(null)
@@ -311,6 +314,11 @@ const Scanners = () => {
                           size="sm" 
                           className="w-full"
                           onClick={() => {
+                            // Navigate to dedicated tool if available
+                            if (scan.name === "Nmap TCP SYN") {
+                              navigate('/tools/port-scanner')
+                              return
+                            }
                             if (!scanTarget.trim()) {
                               addLog({
                                 level: 'warning',

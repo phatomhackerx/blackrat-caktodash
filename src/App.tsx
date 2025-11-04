@@ -16,6 +16,9 @@ import Logs from "./pages/Logs";
 import OSINT from "./pages/OSINT";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import PortScannerTool from "./pages/tools/PortScannerTool";
+import PayloadGeneratorTool from "./pages/tools/PayloadGeneratorTool";
+import VulnerabilityScannerTool from "./pages/tools/VulnerabilityScannerTool";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +41,12 @@ const App = () => (
           <Route path="/logs" element={<Logs />} />
           <Route path="/osint" element={<OSINT />} />
           <Route path="/settings" element={<Settings />} />
+          
+          {/* Tool Detail Pages */}
+          <Route path="/tools/port-scanner" element={<PortScannerTool />} />
+          <Route path="/tools/payload-generator" element={<PayloadGeneratorTool />} />
+          <Route path="/tools/vulnerability-scanner" element={<VulnerabilityScannerTool />} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

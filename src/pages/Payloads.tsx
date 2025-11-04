@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { useCerberusStore } from "@/store/cerberus-store"
-import { Package, Download, Code, Shield, Skull, Wifi } from "lucide-react"
+import { Package, Download, Code, Shield, Skull, Wifi, ExternalLink } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const Payloads = () => {
   const { addLog } = useCerberusStore()
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -143,10 +145,10 @@ const Payloads = () => {
                     <Button 
                       variant="outline" 
                       className="border-glass-border hover:border-primary/30"
-                      onClick={generateCustomPayload}
-                      disabled={isGenerating}
+                      onClick={() => navigate('/tools/payload-generator')}
                     >
-                      {isGenerating ? 'Gerando...' : 'Gerar Personalizado'}
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Gerar Personalizado
                     </Button>
                   </div>
                 </CardContent>
