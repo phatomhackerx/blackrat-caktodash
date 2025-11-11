@@ -19,6 +19,13 @@ import NotFound from "./pages/NotFound";
 import PortScannerTool from "./pages/tools/PortScannerTool";
 import PayloadGeneratorTool from "./pages/tools/PayloadGeneratorTool";
 import VulnerabilityScannerTool from "./pages/tools/VulnerabilityScannerTool";
+import HashCrackerTool from "./pages/tools/HashCrackerTool";
+import SQLInjectionTool from "./pages/tools/SQLInjectionTool";
+import XSSTesterTool from "./pages/tools/XSSTesterTool";
+import DNSEnumerationTool from "./pages/tools/DNSEnumerationTool";
+import WHOISLookupTool from "./pages/tools/WHOISLookupTool";
+import SubdomainFinderTool from "./pages/tools/SubdomainFinderTool";
+import EmailHarvesterTool from "./pages/tools/EmailHarvesterTool";
 
 const queryClient = new QueryClient();
 
@@ -43,9 +50,16 @@ const App = () => (
           <Route path="/settings" element={<Settings />} />
           
           {/* Tool Detail Pages */}
-          <Route path="/tools/port-scanner" element={<PortScannerTool />} />
-          <Route path="/tools/payload-generator" element={<PayloadGeneratorTool />} />
-          <Route path="/tools/vulnerability-scanner" element={<VulnerabilityScannerTool />} />
+            <Route path="/tools/port-scanner" element={<PortScannerTool />} />
+            <Route path="/tools/payload-generator" element={<PayloadGeneratorTool />} />
+            <Route path="/tools/vulnerability-scanner" element={<VulnerabilityScannerTool />} />
+            <Route path="/tools/hash-cracker" element={<HashCrackerTool />} />
+            <Route path="/tools/sql-injection" element={<SQLInjectionTool />} />
+            <Route path="/tools/xss-tester" element={<XSSTesterTool />} />
+            <Route path="/tools/dns-enumeration" element={<DNSEnumerationTool />} />
+            <Route path="/tools/whois-lookup" element={<WHOISLookupTool />} />
+            <Route path="/tools/subdomain-finder" element={<SubdomainFinderTool />} />
+            <Route path="/tools/email-harvester" element={<EmailHarvesterTool />} />
           
           <Route path="*" element={<NotFound />} />
         </Routes>

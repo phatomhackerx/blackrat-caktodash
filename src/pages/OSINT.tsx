@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useCerberusStore } from "@/store/cerberus-store"
-import { Search, Globe, Mail, Users, Eye, Download, ExternalLink, Clock } from "lucide-react"
+import { Search, Globe, Mail, Users, Eye, Download, ExternalLink, Clock, Network } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const OSINT = () => {
   const { t } = useTranslation()
   const { addLog } = useCerberusStore()
+  const navigate = useNavigate()
   const [target, setTarget] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [results, setResults] = useState<any>({})
