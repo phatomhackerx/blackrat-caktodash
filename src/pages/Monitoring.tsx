@@ -9,11 +9,16 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useCerberusStore } from "@/store/cerberus-store"
 import { Activity, Cpu, HardDrive, Wifi, Users, AlertTriangle, Eye } from "lucide-react"
+import { DetailModal } from "@/components/DetailModal"
+import { useToast } from "@/hooks/use-toast"
 
 const Monitoring = () => {
   const { t } = useTranslation()
   const { systemMetrics, addLog } = useCerberusStore()
   const [activeAlerts, setActiveAlerts] = useState(3)
+  const [selectedAlert, setSelectedAlert] = useState<any>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const { toast } = useToast()
 
   // Real-time monitoring updates
   useEffect(() => {
@@ -198,6 +203,8 @@ const Monitoring = () => {
                               size="sm" 
                               className="border-glass-border hover:border-primary/30"
                               onClick={() => {
+                                setSelectedAlert(alert)
+                                setDetailsOpen(true)
                                 addLog({ 
                                   level: 'info', 
                                   source: 'Monitoring', 
@@ -214,6 +221,10 @@ const Monitoring = () => {
                               className="border-glass-border hover:border-primary/30"
                               onClick={() => {
                                 setActiveAlerts(prev => Math.max(0, prev - 1))
+                                toast({
+                                  title: "Alerta Descartado",
+                                  description: `${alert.type}: ${alert.message}`
+                                })
                                 addLog({ 
                                   level: 'info', 
                                   source: 'Monitoring', 
@@ -302,6 +313,10 @@ const Monitoring = () => {
                       className="h-20 flex flex-col space-y-2 border-glass-border hover:border-primary/30"
                       onClick={() => {
                         setActiveAlerts(0)
+                        toast({
+                          title: "Alertas Revisados",
+                          description: "Todos os alertas foram marcados como revisados"
+                        })
                         addLog({ level: 'info', source: 'Monitoring', message: 'All alerts reviewed and cleared' })
                       }}
                     >
@@ -324,6 +339,10 @@ const Monitoring = () => {
                         link.href = url
                         link.download = `monitoring_report_${Date.now()}.json`
                         link.click()
+                        toast({
+                          title: "Relatório Exportado",
+                          description: "Relatório de monitoramento salvo com sucesso"
+                        })
                         addLog({ level: 'success', source: 'Monitoring', message: 'Report exported successfully' })
                       }}
                     >
@@ -337,6 +356,94 @@ const Monitoring = () => {
           </div>
         </div>
       </SidebarProvider>
+      
+      {/* Alert Details Modal */}
+      <DetailModal
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        title={selectedAlert?.message || "Detalhes do Alerta"}
+        description={`${selectedAlert?.type} - ${selectedAlert?.severity}`}
+      >
+        {selectedAlert && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Tipo</p>
+                <p className="font-semibold">{selectedAlert.type}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Severidade</p>
+                <Badge className={getSeverityColor(selectedAlert.severity)}>
+                  {selectedAlert.severity}
+                </Badge>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Origem</p>
+                <p className="font-semibold">{selectedAlert.source}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Tempo</p>
+                <p className="font-semibold">{selectedAlert.time}</p>
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Mensagem</p>
+              <p className="text-sm bg-foreground/5 p-4 rounded-lg border border-foreground/10">
+                {selectedAlert.message}
+              </p>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Ações Recomendadas</p>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-start space-x-2">
+                  <span className="text-primary">•</span>
+                  <span>Investigar origem do alerta e validar ameaça</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-primary">•</span>
+                  <span>Verificar logs relacionados para mais contexto</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-primary">•</span>
+                  <span>Aplicar medidas de mitigação se necessário</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-primary">•</span>
+                  <span>Documentar resolução e adicionar à base de conhecimento</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button 
+                className="flex-1"
+                onClick={() => {
+                  toast({
+                    title: "Investigação Iniciada",
+                    description: "Coletando informações adicionais..."
+                  })
+                  addLog({
+                    level: 'info',
+                    source: 'Monitoring',
+                    message: `Investigation started for: ${selectedAlert.message}`
+                  })
+                  setDetailsOpen(false)
+                }}
+              >
+                Investigar
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => setDetailsOpen(false)}
+              >
+                Fechar
+              </Button>
+            </div>
+          </div>
+        )}
+      </DetailModal>
     </div>
   )
 }
