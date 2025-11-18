@@ -11,8 +11,7 @@ import {
   Settings, 
   FileText,
   Wifi,
-  Eye,
-  BookOpen
+  Eye
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useCerberusStore } from "@/store/cerberus-store"
@@ -52,7 +51,6 @@ export function CerberusSidebar() {
     { title: t("sidebar.network"), url: "/network", icon: Wifi },
     { title: t("sidebar.logs"), url: "/logs", icon: FileText },
     { title: t("sidebar.osint"), url: "/osint", icon: Eye },
-    { title: "Documentação", url: "/documentation", icon: BookOpen },
     { title: t("sidebar.settings"), url: "/settings", icon: Settings }
   ]
 

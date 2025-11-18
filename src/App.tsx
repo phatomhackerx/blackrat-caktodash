@@ -16,7 +16,6 @@ import Logs from "./pages/Logs";
 import OSINT from "./pages/OSINT";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
-import Documentation from "./pages/Documentation";
 import PortScannerTool from "./pages/tools/PortScannerTool";
 import PayloadGeneratorTool from "./pages/tools/PayloadGeneratorTool";
 import VulnerabilityScannerTool from "./pages/tools/VulnerabilityScannerTool";
@@ -62,7 +61,6 @@ const App = () => (
             <Route path="/tools/subdomain-finder" element={<SubdomainFinderTool />} />
             <Route path="/tools/email-harvester" element={<EmailHarvesterTool />} />
           
-          <Route path="/documentation" element={<Documentation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
