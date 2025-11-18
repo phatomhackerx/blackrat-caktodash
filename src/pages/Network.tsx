@@ -9,17 +9,37 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useCerberusStore } from "@/store/cerberus-store"
 import { Wifi, Globe, Shield, Router, Smartphone, Monitor, Play, Search } from "lucide-react"
+import { DetailModal } from "@/components/DetailModal"
+import { useToast } from "@/hooks/use-toast"
 
 const Network = () => {
   const { t } = useTranslation()
   const { addLog, addTarget } = useCerberusStore()
+  const [selectedNode, setSelectedNode] = useState<any>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const { toast } = useToast()
 
   const startNetworkScan = () => {
+    toast({
+      title: "Scan de Rede Iniciado",
+      description: "Descobrindo dispositivos na rede..."
+    })
     addLog({
       level: 'info',
       source: 'Network',
       message: 'Network discovery scan initiated'
     })
+    setTimeout(() => {
+      toast({
+        title: "Scan Completo",
+        description: "4 dispositivos encontrados na rede"
+      })
+      addLog({
+        level: 'success',
+        source: 'Network',
+        message: 'Network scan completed - 4 devices found'
+      })
+    }, 2500)
   }
 
   const addToWatchlist = (device: any) => {
@@ -30,6 +50,10 @@ const Network = () => {
       tags: [device.type, device.vendor],
       priority: 'medium',
       status: 'unknown'
+    })
+    toast({
+      title: "Adicionado à Watchlist",
+      description: `${device.name} foi adicionado com sucesso`
     })
     addLog({
       level: 'info',
@@ -237,12 +261,20 @@ const Network = () => {
                               size="sm" 
                               className="border-glass-border hover:border-primary/30"
                               onClick={() => {
+                                toast({
+                                  title: "Scan de Portas Iniciado",
+                                  description: `Escaneando ${node.name}...`
+                                })
                                 addLog({
                                   level: 'info',
                                   source: 'Network',
                                   message: `Port scan initiated for ${node.name} (${node.ip})`
                                 })
                                 setTimeout(() => {
+                                  toast({
+                                    title: "Scan Completo",
+                                    description: `Encontradas ${node.services.length} portas abertas`
+                                  })
                                   addLog({
                                     level: 'success',
                                     source: 'Network',

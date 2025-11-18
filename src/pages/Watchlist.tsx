@@ -10,11 +10,19 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { useCerberusStore } from "@/store/cerberus-store"
 import { Target, Plus, Activity, Clock, Eye, Trash2, Upload } from "lucide-react"
+import { DetailModal } from "@/components/DetailModal"
+import { ConfirmDialog } from "@/components/ConfirmDialog"
+import { useToast } from "@/hooks/use-toast"
 
 const Watchlist = () => {
   const { t } = useTranslation()
   const { targets, addTarget, removeTarget, addLog } = useCerberusStore()
   const [newTarget, setNewTarget] = useState("")
+  const [selectedTarget, setSelectedTarget] = useState<any>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const [targetToDelete, setTargetToDelete] = useState<any>(null)
+  const { toast } = useToast()
 
   // Mock data for demo
   const mockTargets = [
@@ -115,6 +123,11 @@ const Watchlist = () => {
       status: 'unknown'
     })
     
+    toast({
+      title: "Alvo Adicionado",
+      description: `${newTarget} foi adicionado à watchlist`
+    })
+    
     addLog({
       level: 'info',
       source: 'Watchlist',
@@ -126,6 +139,11 @@ const Watchlist = () => {
 
   const handleRemoveTarget = (targetId: string) => {
     removeTarget(targetId)
+    toast({
+      title: "Alvo Removido",
+      description: "Target removido da watchlist",
+      variant: "destructive"
+    })
     addLog({
       level: 'info',
       source: 'Watchlist',
@@ -134,15 +152,35 @@ const Watchlist = () => {
   }
 
   const scanTarget = (target: any) => {
+    toast({
+      title: "Scan Iniciado",
+      description: `Escaneando ${target.name}...`
+    })
     addLog({
       level: 'info',
       source: 'Watchlist',
       message: `Scanning target: ${target.name} (${target.ip})`
     })
+    setTimeout(() => {
+      toast({
+        title: "Scan Completo",
+        description: `${target.name} escaneado com sucesso`
+      })
+      addLog({
+        level: 'success',
+        source: 'Watchlist',
+        message: `Scan completed for ${target.name}`
+      })
+    }, 2000)
   }
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="min-h-screen bg-background relative"
+    >
       <StarfieldBackground />
       <SidebarProvider>
         <div className="flex w-full min-h-screen">
@@ -297,6 +335,8 @@ const Watchlist = () => {
                               size="sm" 
                               className="border-glass-border hover:border-primary/30"
                               onClick={() => {
+                                setSelectedTarget(target)
+                                setDetailsOpen(true)
                                 addLog({
                                   level: 'info',
                                   source: 'Watchlist',
@@ -311,7 +351,10 @@ const Watchlist = () => {
                               variant="outline" 
                               size="sm" 
                               className="border-glass-border hover:border-destructive/30 hover:text-destructive"
-                              onClick={() => handleRemoveTarget(target.id)}
+                              onClick={() => {
+                                setTargetToDelete(target)
+                                setDeleteConfirmOpen(true)
+                              }}
                             >
                               <Trash2 className="h-3 w-3" />
                             </Button>
@@ -353,7 +396,102 @@ const Watchlist = () => {
           </div>
         </div>
       </SidebarProvider>
-    </div>
+      
+      {/* Target Details Modal */}
+      <DetailModal
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        title={selectedTarget?.name || "Detalhes do Alvo"}
+        description={`${selectedTarget?.ip} - ${selectedTarget?.status}`}
+      >
+        {selectedTarget && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Endereço IP</p>
+                <p className="font-mono font-semibold">{selectedTarget.ip}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Status</p>
+                <Badge className={`${getStatusDot(selectedTarget.status)} px-3`}>
+                  {selectedTarget.status.toUpperCase()}
+                </Badge>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Nível de Risco</p>
+                <Badge className={getRiskColor(selectedTarget.risk)}>
+                  {selectedTarget.risk.toUpperCase()}
+                </Badge>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">Última Visualização</p>
+                <p className="font-semibold">{selectedTarget.lastSeen}</p>
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Portas Abertas</p>
+              <div className="flex flex-wrap gap-2">
+                {selectedTarget.ports.map((port: number) => (
+                  <span key={port} className="px-3 py-1 bg-primary/10 text-primary font-mono rounded border border-primary/30">
+                    :{port}
+                  </span>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Serviços Detectados</p>
+              <div className="space-y-2">
+                {selectedTarget.services.map((service: string, index: number) => (
+                  <div key={index} className="p-3 bg-foreground/5 rounded-lg border border-foreground/10">
+                    <p className="font-mono text-sm">{service}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Notas</p>
+              <p className="text-sm bg-foreground/5 p-4 rounded-lg border border-foreground/10">
+                {selectedTarget.notes}
+              </p>
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button 
+                className="flex-1"
+                onClick={() => {
+                  scanTarget(selectedTarget)
+                  setDetailsOpen(false)
+                }}
+              >
+                <Activity className="h-4 w-4 mr-2" />
+                Escanear Agora
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => setDetailsOpen(false)}
+              >
+                Fechar
+              </Button>
+            </div>
+          </div>
+        )}
+      </DetailModal>
+      
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        title="Remover Alvo"
+        description={`Tem certeza que deseja remover "${targetToDelete?.name}" da watchlist? Esta ação não pode ser desfeita.`}
+        onConfirm={() => targetToDelete && handleRemoveTarget(targetToDelete.id)}
+        confirmText="Remover"
+        cancelText="Cancelar"
+        variant="destructive"
+      />
+    </motion.div>
   )
 }
 
