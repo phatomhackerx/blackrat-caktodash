@@ -11,17 +11,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useCerberusStore } from "@/store/cerberus-store"
 import { useLanguageSwitcher } from "@/hooks/useLanguageSwitcher"
 import { Settings, User, Shield, Bell, Database, Globe, RotateCcw } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { ConfirmDialog } from "@/components/ConfirmDialog"
 
 const SettingsPage = () => {
   const { t } = useTranslation()
-  const { config, updateConfig, resetSession } = useCerberusStore()
+  const { config, updateConfig, resetSession, addLog } = useCerberusStore()
   const { currentLanguage, switchLanguage, availableLanguages } = useLanguageSwitcher()
   const [demoMode, setDemoMode] = useState(config.demoMode || false)
   const [stealthMode, setStealthMode] = useState(config.stealthMode || false)
+  const [twoFactor, setTwoFactor] = useState(false)
+  const [autoLock, setAutoLock] = useState(true)
+  const [alerts, setAlerts] = useState(true)
+  const [scanNotifs, setScanNotifs] = useState(true)
+  const [resetDialogOpen, setResetDialogOpen] = useState(false)
+  const { toast } = useToast()
 
   const handleResetSession = () => {
     resetSession()
-    // Show confirmation toast would go here
+    setResetDialogOpen(false)
+    toast({
+      title: "Sessão Resetada",
+      description: "Todos os dados foram limpos e a sessão foi reiniciada"
+    })
+    addLog({
+      level: 'info',
+      source: 'Settings',
+      message: 'Session reset performed'
+    })
   }
 
   return (
@@ -77,14 +94,41 @@ const SettingsPage = () => {
                       <p className="font-medium">{t('settings.twoFactor')}</p>
                       <p className="text-sm text-muted-foreground">Autenticação adicional para maior segurança</p>
                     </div>
-                    <Switch />
+                    <Switch 
+                      checked={twoFactor}
+                      onCheckedChange={(checked) => {
+                        setTwoFactor(checked)
+                        toast({
+                          title: checked ? "2FA Ativado" : "2FA Desativado",
+                          description: checked ? "Autenticação de dois fatores foi habilitada" : "Autenticação de dois fatores foi desabilitada"
+                        })
+                        addLog({
+                          level: 'info',
+                          source: 'Settings',
+                          message: `Two-factor authentication ${checked ? 'enabled' : 'disabled'}`
+                        })
+                      }}
+                    />
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <div>
                       <p className="font-medium">{t('settings.autoLock')}</p>
                       <p className="text-sm text-muted-foreground">Bloqueia automaticamente após inatividade</p>
                     </div>
-                    <Switch defaultChecked />
+                    <Switch 
+                      checked={autoLock}
+                      onCheckedChange={(checked) => {
+                        setAutoLock(checked)
+                        toast({
+                          title: checked ? "Auto-Lock Ativado" : "Auto-Lock Desativado"
+                        })
+                        addLog({
+                          level: 'info',
+                          source: 'Settings',
+                          message: `Auto-lock ${checked ? 'enabled' : 'disabled'}`
+                        })
+                      }}
+                    />
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <div>
@@ -116,14 +160,30 @@ const SettingsPage = () => {
                       <p className="font-medium">{t('settings.alertNotifications')}</p>
                       <p className="text-sm text-muted-foreground">Receba alertas de segurança em tempo real</p>
                     </div>
-                    <Switch defaultChecked />
+                    <Switch 
+                      checked={alerts}
+                      onCheckedChange={(checked) => {
+                        setAlerts(checked)
+                        toast({
+                          title: checked ? "Alertas Ativados" : "Alertas Desativados"
+                        })
+                      }}
+                    />
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <div>
                       <p className="font-medium">{t('settings.scanNotifications')}</p>
                       <p className="text-sm text-muted-foreground">Notificações ao concluir escaneamentos</p>
                     </div>
-                    <Switch defaultChecked />
+                    <Switch 
+                      checked={scanNotifs}
+                      onCheckedChange={(checked) => {
+                        setScanNotifs(checked)
+                        toast({
+                          title: checked ? "Notificações de Scan Ativadas" : "Notificações de Scan Desativadas"
+                        })
+                      }}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -187,7 +247,7 @@ const SettingsPage = () => {
                     </div>
                     <Button 
                       variant="outline" 
-                      onClick={handleResetSession}
+                      onClick={() => setResetDialogOpen(true)}
                       className="flex items-center space-x-2 border-foreground/20 hover:border-foreground/40 shrink-0"
                     >
                       <RotateCcw className="h-4 w-4" />
@@ -200,6 +260,17 @@ const SettingsPage = () => {
           </div>
         </div>
       </SidebarProvider>
+
+      <ConfirmDialog
+        open={resetDialogOpen}
+        onOpenChange={setResetDialogOpen}
+        title="Resetar Sessão"
+        description="Tem certeza que deseja resetar a sessão? Todos os dados serão perdidos e não poderão ser recuperados."
+        onConfirm={handleResetSession}
+        confirmText="Resetar"
+        cancelText="Cancelar"
+        variant="destructive"
+      />
     </div>
   )
 }
